@@ -1,0 +1,66 @@
+import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'features/chat/chat_screen.dart';
+import 'features/history/history_screen.dart';
+import 'features/stats/stats_screen.dart';
+import 'features/savings/savings_screen.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('ko');
+  runApp(const ChatBudgetApp());
+}
+
+class ChatBudgetApp extends StatelessWidget {
+  const ChatBudgetApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'ChatBudget',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1F4E79)),
+        useMaterial3: true,
+      ),
+      home: const MainNav(),
+    );
+  }
+}
+
+class MainNav extends StatefulWidget {
+  const MainNav({super.key});
+
+  @override
+  State<MainNav> createState() => _MainNavState();
+}
+
+class _MainNavState extends State<MainNav> {
+  int _index = 0;
+
+  final _screens = const [
+    ChatScreen(),
+    HistoryScreen(),
+    StatsScreen(),
+    SavingsScreen(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: IndexedStack(index: _index, children: _screens),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _index,
+        onDestinationSelected: (i) => setState(() => _index = i),
+        backgroundColor: Colors.white,
+        indicatorColor: const Color(0xFFD6E4F7),
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.chat_bubble_outline), selectedIcon: Icon(Icons.chat_bubble), label: '입력'),
+          NavigationDestination(icon: Icon(Icons.receipt_long_outlined), selectedIcon: Icon(Icons.receipt_long), label: '내역'),
+          NavigationDestination(icon: Icon(Icons.bar_chart_outlined), selectedIcon: Icon(Icons.bar_chart), label: '통계'),
+          NavigationDestination(icon: Icon(Icons.savings_outlined), selectedIcon: Icon(Icons.savings), label: '저축'),
+        ],
+      ),
+    );
+  }
+}
