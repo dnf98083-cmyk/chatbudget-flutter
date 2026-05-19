@@ -1,16 +1,89 @@
-# chatbudget_flutter
+# 💬 ChatBudget
 
-A new Flutter project.
+> 대화하듯 기록하고, 한눈에 파악하는 개인 금융 앱
 
-## Getting Started
+채팅창에 자연어로 입력하면 자동으로 가계부가 기록되는 Flutter 앱입니다.
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## 주요 기능
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### 채팅으로 기록
+복잡한 양식 없이 대화하듯 입력하면 끝입니다.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```
+스타벅스 6000원
+어제 점심 8500
+3일전 택시 12000
+월급 250만원
+```
+
+### 자동 파싱
+- **금액** — `6000원` / `6만` / `6.5k` 모두 인식
+- **날짜** — 오늘 / 어제 / 그제 / N일전 / MM-DD / YYYY-MM-DD
+- **카테고리** — 식비, 카페, 교통, 쇼핑, 편의점, 의료, 문화, 통신 자동 분류
+- **수입/지출** — 월급·급여·용돈 등 키워드로 자동 구분
+
+### 내역 조회
+날짜별로 지출·수입 내역을 한눈에 확인합니다.
+
+### 월별 통계
+- 총 지출 / 총 수입 / 잔액 요약
+- 카테고리별 파이 차트
+
+### 저축 목표
+목표 금액과 현재 저축액을 관리합니다.
+
+---
+
+## 기술 스택
+
+| 항목 | 내용 |
+|------|------|
+| Framework | Flutter (Dart) |
+| 로컬 DB | sqflite (SQLite) |
+| 차트 | fl_chart |
+| 날짜 포맷 | intl |
+
+---
+
+## 실행 방법
+
+```bash
+# 의존성 설치
+flutter pub get
+
+# 앱 실행
+flutter run
+```
+
+Flutter SDK 3.x 이상 필요합니다.
+
+---
+
+## 프로젝트 구조
+
+```
+lib/
+├── core/
+│   ├── database/     # SQLite DB 헬퍼
+│   ├── models/       # 데이터 모델 (거래내역, 저축목표)
+│   └── parser/       # 자연어 → 거래내역 파싱
+└── features/
+    ├── chat/         # 채팅 입력 화면
+    ├── history/      # 내역 조회
+    ├── stats/        # 월별 통계
+    └── savings/      # 저축 목표
+```
+
+---
+
+## 입력 예시
+
+| 입력 | 인식 결과 |
+|------|-----------|
+| `스타벅스 아메리카노 4500` | 카페 · 4,500원 지출 |
+| `어제 택시 12000원` | 교통 · 12,000원 (어제 날짜) |
+| `3일전 편의점 3500` | 편의점 · 3,500원 (3일 전) |
+| `월급 250만원` | 수입 · 2,500,000원 |
+| `넷플릭스 17000` | 문화 · 17,000원 지출 |
