@@ -207,6 +207,23 @@
   .next-items li::before { content: "→"; color: var(--secondary); font-weight: 700; }
 
   footer { text-align: center; color: #aaa; font-size: 0.8rem; margin-top: 20px; }
+
+  .svg-section {
+    max-width: 1100px;
+    margin: 0 auto 32px;
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 24px 20px 20px;
+  }
+  .svg-section h2 {
+    text-align: center;
+    color: var(--primary);
+    font-size: 1.05rem;
+    margin-bottom: 18px;
+    letter-spacing: -0.3px;
+  }
+  .svg-section svg { display: block; margin: 0 auto; width: 100%; }
 </style>
 </head>
 <body>
@@ -220,6 +237,90 @@
   <span><span class="dot done"></span> 완료</span>
   <span><span class="dot wip"></span> 진행 중</span>
   <span><span class="dot todo"></span> 예정</span>
+</div>
+
+<!-- SVG WBS 트리 다이어그램 -->
+<div class="svg-section">
+  <h2>📊 작업 분류 체계 (Work Breakdown Structure)</h2>
+  <svg viewBox="0 0 1100 330" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="sh"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.10"/></filter>
+    </defs>
+
+    <!-- ROOT -->
+    <rect x="400" y="14" width="300" height="52" rx="12" fill="#1F4E79" filter="url(#sh)"/>
+    <text x="550" y="36" fill="white" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="14" font-weight="bold">💬 ChatBudget</text>
+    <text x="550" y="55" fill="rgba(255,255,255,0.8)" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="11">AI 기반 개인 가계부 앱</text>
+
+    <!-- 루트 → 수평선 -->
+    <line x1="550" y1="66" x2="550" y2="90" stroke="#CBD5E0" stroke-width="2"/>
+    <line x1="135" y1="90" x2="965" y2="90" stroke="#CBD5E0" stroke-width="2"/>
+    <line x1="135" y1="90" x2="135" y2="108" stroke="#CBD5E0" stroke-width="2"/>
+    <line x1="368" y1="90" x2="368" y2="108" stroke="#CBD5E0" stroke-width="2"/>
+    <line x1="635" y1="90" x2="635" y2="108" stroke="#CBD5E0" stroke-width="2"/>
+    <line x1="965" y1="90" x2="965" y2="108" stroke="#CBD5E0" stroke-width="2"/>
+
+    <!-- SESSION 1 -->
+    <rect x="25" y="108" width="220" height="50" rx="9" fill="#1F4E79" filter="url(#sh)"/>
+    <text x="135" y="129" fill="white" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="bold">Session 1</text>
+    <text x="135" y="147" fill="rgba(255,255,255,0.85)" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">🏗️ 기반 구축</text>
+    <line x1="135" y1="158" x2="135" y2="174" stroke="#CBD5E0" stroke-width="1.5"/>
+    <rect x="25" y="174" width="220" height="132" rx="8" fill="#EFF6FF" stroke="#DBEAFE" stroke-width="1" filter="url(#sh)"/>
+    <text x="135" y="193" fill="#1e40af" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">✅ Flutter 앱 초기화</text>
+    <text x="135" y="210" fill="#1e40af" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">✅ 채팅 UI 구현</text>
+    <text x="135" y="227" fill="#1e40af" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">✅ 자연어 파서</text>
+    <text x="135" y="244" fill="#1e40af" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">✅ SQLite DB 설계</text>
+    <text x="135" y="261" fill="#1e40af" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">✅ 내역·통계·저축 화면</text>
+    <text x="135" y="278" fill="#1e40af" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">✅ 멀티 플랫폼 지원</text>
+    <rect x="25" y="308" width="220" height="14" rx="7" fill="#22C55E" opacity="0.25"/>
+    <rect x="25" y="308" width="220" height="14" rx="7" fill="#22C55E"/>
+    <text x="135" y="319" fill="white" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="9" font-weight="bold">100% 완료</text>
+
+    <!-- SESSION 2 -->
+    <rect x="258" y="108" width="220" height="50" rx="9" fill="#2E75B6" filter="url(#sh)"/>
+    <text x="368" y="129" fill="white" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="bold">Session 2</text>
+    <text x="368" y="147" fill="rgba(255,255,255,0.85)" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">📄 문서화</text>
+    <line x1="368" y1="158" x2="368" y2="174" stroke="#CBD5E0" stroke-width="1.5"/>
+    <rect x="258" y="174" width="220" height="132" rx="8" fill="#EFF6FF" stroke="#DBEAFE" stroke-width="1" filter="url(#sh)"/>
+    <text x="368" y="193" fill="#1e40af" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">✅ README 전면 개편</text>
+    <text x="368" y="210" fill="#1e40af" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">✅ architecture.md</text>
+    <text x="368" y="227" fill="#1e40af" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">✅ setup.md</text>
+    <text x="368" y="244" fill="#1e40af" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">✅ testing.md</text>
+    <text x="368" y="261" fill="#1e40af" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">✅ AGENTS.md</text>
+    <text x="368" y="278" fill="#1e40af" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">✅ GitHub 리포 설정</text>
+    <rect x="258" y="308" width="220" height="14" rx="7" fill="#22C55E"/>
+    <text x="368" y="319" fill="white" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="9" font-weight="bold">100% 완료</text>
+
+    <!-- SESSION 3 -->
+    <rect x="525" y="108" width="220" height="50" rx="9" fill="#ED7D31" filter="url(#sh)"/>
+    <text x="635" y="129" fill="white" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="bold">Session 3</text>
+    <text x="635" y="147" fill="rgba(255,255,255,0.85)" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">🤖 AI · 인증</text>
+    <line x1="635" y1="158" x2="635" y2="174" stroke="#CBD5E0" stroke-width="1.5"/>
+    <rect x="525" y="174" width="220" height="132" rx="8" fill="#FFF7ED" stroke="#FED7AA" stroke-width="1" filter="url(#sh)"/>
+    <text x="635" y="193" fill="#9a3412" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">✅ 회원가입 · 로그인</text>
+    <text x="635" y="210" fill="#9a3412" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">✅ 계정별 데이터 분리</text>
+    <text x="635" y="227" fill="#9a3412" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">✅ Gemini AI 파싱</text>
+    <text x="635" y="244" fill="#9a3412" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">✅ 실시간 내역 갱신</text>
+    <text x="635" y="261" fill="#9a3412" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">✅ .env API 키 내장</text>
+    <text x="635" y="278" fill="#D97706" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">🔨 AI 모델 안정화</text>
+    <rect x="525" y="308" width="220" height="14" rx="7" fill="#F59E0B"/>
+    <text x="635" y="319" fill="white" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="9" font-weight="bold">83% 진행 중</text>
+
+    <!-- SESSION 4 -->
+    <rect x="855" y="108" width="220" height="50" rx="9" fill="#70AD47" filter="url(#sh)"/>
+    <text x="965" y="129" fill="white" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="12" font-weight="bold">Session 4</text>
+    <text x="965" y="147" fill="rgba(255,255,255,0.85)" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">🚀 고도화 (예정)</text>
+    <line x1="965" y1="158" x2="965" y2="174" stroke="#CBD5E0" stroke-width="1.5"/>
+    <rect x="855" y="174" width="220" height="132" rx="8" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1" filter="url(#sh)"/>
+    <text x="965" y="193" fill="#6B7280" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">⬜ 예산 설정 기능</text>
+    <text x="965" y="210" fill="#6B7280" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">⬜ AI 소비 분석 리포트</text>
+    <text x="965" y="227" fill="#6B7280" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">⬜ 반복 지출 자동 등록</text>
+    <text x="965" y="244" fill="#6B7280" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">⬜ CSV 내보내기</text>
+    <text x="965" y="261" fill="#6B7280" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">⬜ 단위·위젯 테스트</text>
+    <text x="965" y="278" fill="#6B7280" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10.5">⬜ Android APK 배포</text>
+    <rect x="855" y="308" width="220" height="14" rx="7" fill="#D1D5DB"/>
+    <text x="965" y="319" fill="white" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="9" font-weight="bold">0% 예정</text>
+  </svg>
 </div>
 
 <div class="phase-grid">
