@@ -1,8 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
+import 'core/models/user_model.dart';
+import 'core/services/auth_service.dart';
+import 'features/auth/auth_screen.dart';
 import 'features/chat/chat_screen.dart';
 import 'features/history/history_screen.dart';
 import 'features/stats/stats_screen.dart';
@@ -18,7 +22,9 @@ void main() async {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
+  await dotenv.load(fileName: 'assets/.env');
   await initializeDateFormatting('ko');
+  await AuthService.init();
   runApp(const ChatBudgetApp());
 }
 
@@ -34,7 +40,10 @@ class ChatBudgetApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1F4E79)),
         useMaterial3: true,
       ),
-      home: const MainNav(),
+      home: ValueListenableBuilder<UserModel?>(
+        valueListenable: AuthService.userNotifier,
+        builder: (_, user, __) => user != null ? const MainNav() : const AuthScreen(),
+      ),
     );
   }
 }

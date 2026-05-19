@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../core/database/db_helper.dart';
 import '../../core/models/savings_goal_model.dart';
+import '../../core/services/auth_service.dart';
 
 class SavingsScreen extends StatefulWidget {
   const SavingsScreen({super.key});
@@ -21,14 +22,13 @@ class _SavingsScreenState extends State<SavingsScreen> {
   }
 
   Future<void> _load() async {
-    final list = await DbHelper.instance.getSavingsGoals();
-    setState(() => _goals = list);
+    final list = await DbHelper.instance.getSavingsGoals(userId: AuthService.currentUserId);
+    if (mounted) setState(() => _goals = list);
   }
 
   void _showAddDialog() {
     final titleCtrl = TextEditingController();
     final targetCtrl = TextEditingController();
-    DateTime? deadline;
 
     showDialog(
       context: context,
@@ -50,8 +50,10 @@ class _SavingsScreenState extends State<SavingsScreen> {
               final title = titleCtrl.text.trim();
               final target = int.tryParse(targetCtrl.text.replaceAll(',', ''));
               if (title.isEmpty || target == null || target <= 0) return;
-              await DbHelper.instance.insertSavingsGoal(SavingsGoalModel(title: title, targetAmount: target, deadline: deadline));
-              Navigator.pop(ctx);
+              await DbHelper.instance.insertSavingsGoal(
+                SavingsGoalModel(userId: AuthService.currentUserId, title: title, targetAmount: target),
+              );
+              if (ctx.mounted) Navigator.pop(ctx);
               _load();
             },
             child: const Text('추가', style: TextStyle(color: Colors.white)),
@@ -83,7 +85,7 @@ class _SavingsScreenState extends State<SavingsScreen> {
               if (amount == null || amount <= 0) return;
               final updated = goal.copyWith(currentAmount: goal.currentAmount + amount);
               await DbHelper.instance.updateSavingsGoal(updated);
-              Navigator.pop(ctx);
+              if (ctx.mounted) Navigator.pop(ctx);
               _load();
             },
             child: const Text('저축', style: TextStyle(color: Colors.white)),
@@ -146,7 +148,7 @@ class _GoalCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 6)],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 6)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,9 +181,7 @@ class _GoalCard extends StatelessWidget {
               value: pct,
               minHeight: 10,
               backgroundColor: const Color(0xFFE3EEFF),
-              valueColor: AlwaysStoppedAnimation<Color>(
-                pct >= 1.0 ? Colors.green : const Color(0xFF2E75B6),
-              ),
+              valueColor: AlwaysStoppedAnimation<Color>(pct >= 1.0 ? Colors.green : const Color(0xFF2E75B6)),
             ),
           ),
           const SizedBox(height: 6),

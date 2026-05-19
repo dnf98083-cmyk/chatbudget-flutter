@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../core/database/db_helper.dart';
 import '../../core/models/transaction_model.dart';
+import '../../core/services/auth_service.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -17,12 +18,19 @@ class _HistoryScreenState extends State<HistoryScreen> {
   @override
   void initState() {
     super.initState();
+    AuthService.refreshNotifier.addListener(_load);
     _load();
   }
 
+  @override
+  void dispose() {
+    AuthService.refreshNotifier.removeListener(_load);
+    super.dispose();
+  }
+
   Future<void> _load() async {
-    final list = await DbHelper.instance.getTransactions();
-    setState(() => _transactions = list);
+    final list = await DbHelper.instance.getTransactions(userId: AuthService.currentUserId);
+    if (mounted) setState(() => _transactions = list);
   }
 
   Map<String, List<TransactionModel>> _groupByDate() {
@@ -36,7 +44,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   Future<void> _delete(TransactionModel t) async {
     await DbHelper.instance.deleteTransaction(t.id!);
-    _load();
+    AuthService.notifyRefresh();
   }
 
   @override
@@ -124,7 +132,7 @@ class _TransactionTile extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 4)],
+          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 4)],
         ),
         child: Row(
           children: [

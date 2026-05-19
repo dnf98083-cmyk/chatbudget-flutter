@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import '../../core/database/db_helper.dart';
 import '../../core/models/transaction_model.dart';
+import '../../core/services/auth_service.dart';
 
 class StatsScreen extends StatefulWidget {
   const StatsScreen({super.key});
@@ -19,12 +20,23 @@ class _StatsScreenState extends State<StatsScreen> {
   @override
   void initState() {
     super.initState();
+    AuthService.refreshNotifier.addListener(_load);
     _load();
   }
 
+  @override
+  void dispose() {
+    AuthService.refreshNotifier.removeListener(_load);
+    super.dispose();
+  }
+
   Future<void> _load() async {
-    final list = await DbHelper.instance.getTransactionsByMonth(_selectedMonth.year, _selectedMonth.month);
-    setState(() => _transactions = list);
+    final list = await DbHelper.instance.getTransactionsByMonth(
+      _selectedMonth.year,
+      _selectedMonth.month,
+      userId: AuthService.currentUserId,
+    );
+    if (mounted) setState(() => _transactions = list);
   }
 
   int get _totalExpense => _transactions.where((t) => t.type == 'expense').fold(0, (s, t) => s + t.amount);
@@ -160,7 +172,7 @@ class _SummaryCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4)]),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4)]),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -185,7 +197,7 @@ class _SectionCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4)]),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4)]),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

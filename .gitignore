@@ -1,3 +1,6 @@
+# API keys - do not commit
+assets/.env
+
 # Miscellaneous
 *.class
 *.log
