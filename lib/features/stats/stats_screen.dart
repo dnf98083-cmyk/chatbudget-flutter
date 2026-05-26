@@ -41,6 +41,22 @@ class _StatsScreenState extends State<StatsScreen> {
 
   int get _totalExpense => _transactions.where((t) => t.type == 'expense').fold(0, (s, t) => s + t.amount);
   int get _totalIncome => _transactions.where((t) => t.type == 'income').fold(0, (s, t) => s + t.amount);
+  int get _balance => _totalIncome - _totalExpense;
+
+  int get _daysLeftInMonth {
+    final now = DateTime.now();
+    final lastDay = DateTime(_selectedMonth.year, _selectedMonth.month + 1, 0).day;
+    if (_selectedMonth.year == now.year && _selectedMonth.month == now.month) {
+      return lastDay - now.day;
+    }
+    return 0;
+  }
+
+  int get _dailyBudget {
+    final left = _daysLeftInMonth;
+    if (left <= 0 || _balance <= 0) return 0;
+    return _balance ~/ left;
+  }
 
   Map<String, int> get _categoryTotals {
     final map = <String, int>{};
@@ -86,8 +102,12 @@ class _StatsScreenState extends State<StatsScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _SummaryRow(totalExpense: _totalExpense, totalIncome: _totalIncome, fmt: _fmt),
+            _SummaryRow(totalExpense: _totalExpense, totalIncome: _totalIncome, balance: _balance, fmt: _fmt),
             const SizedBox(height: 16),
+            if (_daysLeftInMonth > 0) ...[
+              _BudgetTipCard(balance: _balance, daysLeft: _daysLeftInMonth, dailyBudget: _dailyBudget, fmt: _fmt),
+              const SizedBox(height: 16),
+            ],
             if (cats.isNotEmpty) ...[
               _SectionCard(
                 title: '카테고리별 지출',
@@ -140,32 +160,33 @@ class _StatsScreenState extends State<StatsScreen> {
 }
 
 class _SummaryRow extends StatelessWidget {
-  final int totalExpense, totalIncome;
+  final int totalExpense, totalIncome, balance;
   final NumberFormat fmt;
 
-  const _SummaryRow({required this.totalExpense, required this.totalIncome, required this.fmt});
+  const _SummaryRow({required this.totalExpense, required this.totalIncome, required this.balance, required this.fmt});
 
   @override
   Widget build(BuildContext context) {
+    final balanceColor = balance >= 0 ? const Color(0xFF2E75B6) : Colors.red;
+    final balanceText = balance >= 0 ? '${fmt.format(balance)}원' : '-${fmt.format(balance.abs())}원';
     return Row(
       children: [
-        Expanded(child: _SummaryCard(label: '총 지출', amount: totalExpense, color: Colors.red, fmt: fmt)),
+        Expanded(child: _SummaryCard(label: '총 지출', text: '${fmt.format(totalExpense)}원', color: Colors.red, fmt: fmt)),
         const SizedBox(width: 8),
-        Expanded(child: _SummaryCard(label: '총 수입', amount: totalIncome, color: Colors.green, fmt: fmt)),
+        Expanded(child: _SummaryCard(label: '총 수입', text: '${fmt.format(totalIncome)}원', color: Colors.green, fmt: fmt)),
         const SizedBox(width: 8),
-        Expanded(child: _SummaryCard(label: '잔액', amount: totalIncome - totalExpense, color: const Color(0xFF2E75B6), fmt: fmt)),
+        Expanded(child: _SummaryCard(label: '잔액', text: balanceText, color: balanceColor, fmt: fmt)),
       ],
     );
   }
 }
 
 class _SummaryCard extends StatelessWidget {
-  final String label;
-  final int amount;
+  final String label, text;
   final Color color;
   final NumberFormat fmt;
 
-  const _SummaryCard({required this.label, required this.amount, required this.color, required this.fmt});
+  const _SummaryCard({required this.label, required this.text, required this.color, required this.fmt});
 
   @override
   Widget build(BuildContext context) {
@@ -178,7 +199,49 @@ class _SummaryCard extends StatelessWidget {
         children: [
           Text(label, style: const TextStyle(color: Colors.grey, fontSize: 12)),
           const SizedBox(height: 4),
-          Text('${fmt.format(amount.abs())}원', style: TextStyle(fontWeight: FontWeight.bold, color: color, fontSize: 13)),
+          Text(text, style: TextStyle(fontWeight: FontWeight.bold, color: color, fontSize: 13)),
+        ],
+      ),
+    );
+  }
+}
+
+class _BudgetTipCard extends StatelessWidget {
+  final int balance, daysLeft, dailyBudget;
+  final NumberFormat fmt;
+
+  const _BudgetTipCard({required this.balance, required this.daysLeft, required this.dailyBudget, required this.fmt});
+
+  @override
+  Widget build(BuildContext context) {
+    final hasIncome = balance > 0;
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: hasIncome ? const Color(0xFFE8F5E9) : const Color(0xFFFFF3E0),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: hasIncome ? const Color(0xFF81C784) : const Color(0xFFFFB74D)),
+      ),
+      child: Row(
+        children: [
+          Text(hasIncome ? '💡' : '⚠️', style: const TextStyle(fontSize: 22)),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('이번 달 남은 일수: $daysLeft일',
+                    style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                const SizedBox(height: 3),
+                if (hasIncome)
+                  Text('하루 ${fmt.format(dailyBudget)}원 이내로 추천',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF2E7D32)))
+                else
+                  Text('이번 달 예산을 초과했어요',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFFE65100))),
+              ],
+            ),
+          ),
         ],
       ),
     );
