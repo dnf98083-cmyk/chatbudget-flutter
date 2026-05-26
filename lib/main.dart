@@ -22,7 +22,11 @@ void main() async {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
-  await dotenv.load(fileName: 'assets/.env');
+  try {
+    await dotenv.load(fileName: 'assets/.env');
+  } catch (_) {
+    // Web production: API key provided via --dart-define at build time
+  }
   await initializeDateFormatting('ko');
   await AuthService.init();
   runApp(const ChatBudgetApp());
