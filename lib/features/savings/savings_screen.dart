@@ -29,36 +29,64 @@ class _SavingsScreenState extends State<SavingsScreen> {
   void _showAddDialog() {
     final titleCtrl = TextEditingController();
     final targetCtrl = TextEditingController();
+    String? errorMsg;
 
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('저축 목표 추가'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(controller: titleCtrl, decoration: const InputDecoration(labelText: '목표 이름 (예: 여행 자금)')),
-            const SizedBox(height: 8),
-            TextField(controller: targetCtrl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: '목표 금액 (원)')),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDlg) => AlertDialog(
+          title: const Text('저축 목표 추가'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleCtrl,
+                decoration: const InputDecoration(labelText: '목표 이름 (예: 여행 자금)'),
+                onChanged: (_) => setDlg(() => errorMsg = null),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: targetCtrl,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: '목표 금액 (원)', hintText: '예: 500000'),
+                onChanged: (_) => setDlg(() => errorMsg = null),
+              ),
+              if (errorMsg != null) ...[
+                const SizedBox(height: 8),
+                Text(errorMsg!, style: const TextStyle(color: Colors.red, fontSize: 12)),
+              ],
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('취소')),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2E75B6)),
+              onPressed: () async {
+                final title = titleCtrl.text.trim();
+                final raw = targetCtrl.text.replaceAll(',', '').replaceAll(' ', '');
+                final target = int.tryParse(raw);
+                if (title.isEmpty) {
+                  setDlg(() => errorMsg = '목표 이름을 입력해주세요');
+                  return;
+                }
+                if (target == null || target <= 0) {
+                  setDlg(() => errorMsg = '올바른 금액을 숫자로 입력해주세요 (예: 500000)');
+                  return;
+                }
+                try {
+                  await DbHelper.instance.insertSavingsGoal(
+                    SavingsGoalModel(userId: AuthService.currentUserId, title: title, targetAmount: target),
+                  );
+                  if (ctx.mounted) Navigator.pop(ctx);
+                  _load();
+                } catch (e) {
+                  setDlg(() => errorMsg = '저장 실패: $e');
+                }
+              },
+              child: const Text('추가', style: TextStyle(color: Colors.white)),
+            ),
           ],
         ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('취소')),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2E75B6)),
-            onPressed: () async {
-              final title = titleCtrl.text.trim();
-              final target = int.tryParse(targetCtrl.text.replaceAll(',', ''));
-              if (title.isEmpty || target == null || target <= 0) return;
-              await DbHelper.instance.insertSavingsGoal(
-                SavingsGoalModel(userId: AuthService.currentUserId, title: title, targetAmount: target),
-              );
-              if (ctx.mounted) Navigator.pop(ctx);
-              _load();
-            },
-            child: const Text('추가', style: TextStyle(color: Colors.white)),
-          ),
-        ],
       ),
     );
   }

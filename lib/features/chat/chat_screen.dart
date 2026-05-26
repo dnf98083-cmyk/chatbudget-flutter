@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../core/database/db_helper.dart';
+import '../../core/models/savings_goal_model.dart';
 import '../../core/models/transaction_model.dart';
 import '../../core/parser/transaction_parser.dart';
 import '../../core/services/ai_service.dart';
@@ -124,6 +125,68 @@ class _ChatScreenState extends State<ChatScreen> {
       '${fmt.format(transaction.amount)}원 $typeLabel\n'
       '"${transaction.description}"',
     );
+
+    // 저축 카테고리면 저축 목표에도 반영 제안
+    if (transaction.category == '저축') {
+      await _handleSavingsGoal(transaction.amount);
+    }
+  }
+
+  Future<void> _handleSavingsGoal(int amount) async {
+    final goals = await DbHelper.instance.getSavingsGoals(userId: AuthService.currentUserId);
+    if (goals.isEmpty) {
+      _addBot('💡 저축 탭에서 목표를 만들면 진행률을 추적할 수 있어요!');
+      return;
+    }
+    if (!mounted) return;
+    if (goals.length == 1) {
+      _askSavingsGoal(goals.first, amount);
+      return;
+    }
+    // 여러 목표가 있으면 선택 다이얼로그
+    final selected = await showDialog<SavingsGoalModel>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: const Text('어떤 목표에 추가할까요?'),
+        children: [
+          ...goals.map((g) => SimpleDialogOption(
+            onPressed: () => Navigator.pop(ctx, g),
+            child: Text('${g.title}  (${NumberFormat('#,###').format(g.currentAmount)}/${NumberFormat('#,###').format(g.targetAmount)}원)'),
+          )),
+          SimpleDialogOption(
+            onPressed: () => Navigator.pop(ctx, null),
+            child: const Text('추가 안 함', style: TextStyle(color: Colors.grey)),
+          ),
+        ],
+      ),
+    );
+    if (selected != null) _askSavingsGoal(selected, amount);
+  }
+
+  void _askSavingsGoal(SavingsGoalModel goal, int amount) async {
+    if (!mounted) return;
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('저축 목표 반영'),
+        content: Text('"${goal.title}"에 ${NumberFormat('#,###').format(amount)}원을 추가할까요?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('아니요')),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2E75B6)),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('네', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+    if (confirm == true) {
+      final updated = goal.copyWith(currentAmount: goal.currentAmount + amount);
+      await DbHelper.instance.updateSavingsGoal(updated);
+      AuthService.notifyRefresh();
+      _addBot('🎯 "${goal.title}" 목표에 ${NumberFormat('#,###').format(amount)}원 추가됐어요!\n'
+          '현재 ${NumberFormat('#,###').format(updated.currentAmount)} / ${NumberFormat('#,###').format(goal.targetAmount)}원');
+    }
   }
 
   Future<void> _showSettings() async {
