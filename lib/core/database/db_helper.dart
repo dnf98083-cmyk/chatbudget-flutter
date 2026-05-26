@@ -20,7 +20,7 @@ class DbHelper {
     final path = join(dbPath, 'chatbudget.db');
     return openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -53,7 +53,8 @@ class DbHelper {
         title TEXT NOT NULL,
         target_amount INTEGER NOT NULL,
         current_amount INTEGER DEFAULT 0,
-        deadline TEXT
+        deadline TEXT,
+        created_at TEXT
       )
     ''');
   }
@@ -73,6 +74,11 @@ class DbHelper {
       } catch (_) {}
       try {
         await db.execute('ALTER TABLE savings_goals ADD COLUMN user_id INTEGER NOT NULL DEFAULT 0');
+      } catch (_) {}
+    }
+    if (oldVersion < 3) {
+      try {
+        await db.execute('ALTER TABLE savings_goals ADD COLUMN created_at TEXT');
       } catch (_) {}
     }
   }

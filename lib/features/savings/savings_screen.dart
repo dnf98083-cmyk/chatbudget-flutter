@@ -29,6 +29,7 @@ class _SavingsScreenState extends State<SavingsScreen> {
   void _showAddDialog() {
     final titleCtrl = TextEditingController();
     final targetCtrl = TextEditingController();
+    DateTime? selectedDeadline;
     String? errorMsg;
 
     showDialog(
@@ -36,26 +37,63 @@ class _SavingsScreenState extends State<SavingsScreen> {
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDlg) => AlertDialog(
           title: const Text('저축 목표 추가'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: titleCtrl,
-                decoration: const InputDecoration(labelText: '목표 이름 (예: 여행 자금)'),
-                onChanged: (_) => setDlg(() => errorMsg = null),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: targetCtrl,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: '목표 금액 (원)', hintText: '예: 500000'),
-                onChanged: (_) => setDlg(() => errorMsg = null),
-              ),
-              if (errorMsg != null) ...[
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextField(
+                  controller: titleCtrl,
+                  decoration: const InputDecoration(labelText: '목표 이름 (예: 여행 자금)'),
+                  onChanged: (_) => setDlg(() => errorMsg = null),
+                ),
                 const SizedBox(height: 8),
-                Text(errorMsg!, style: const TextStyle(color: Colors.red, fontSize: 12)),
+                TextField(
+                  controller: targetCtrl,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: '목표 금액 (원)', hintText: '예: 500000'),
+                  onChanged: (_) => setDlg(() => errorMsg = null),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    const Text('목표 날짜', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        icon: const Icon(Icons.calendar_today, size: 14),
+                        label: Text(
+                          selectedDeadline != null
+                              ? DateFormat('yyyy.MM.dd').format(selectedDeadline!)
+                              : '선택 (선택사항)',
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                        onPressed: () async {
+                          final picked = await showDatePicker(
+                            context: ctx,
+                            initialDate: DateTime.now().add(const Duration(days: 30)),
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+                          );
+                          if (picked != null) setDlg(() => selectedDeadline = picked);
+                        },
+                      ),
+                    ),
+                    if (selectedDeadline != null)
+                      IconButton(
+                        icon: const Icon(Icons.close, size: 16, color: Colors.grey),
+                        onPressed: () => setDlg(() => selectedDeadline = null),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
+                  ],
+                ),
+                if (errorMsg != null) ...[
+                  const SizedBox(height: 8),
+                  Text(errorMsg!, style: const TextStyle(color: Colors.red, fontSize: 12)),
+                ],
               ],
-            ],
+            ),
           ),
           actions: [
             TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('취소')),
@@ -75,7 +113,12 @@ class _SavingsScreenState extends State<SavingsScreen> {
                 }
                 try {
                   await DbHelper.instance.insertSavingsGoal(
-                    SavingsGoalModel(userId: AuthService.currentUserId, title: title, targetAmount: target),
+                    SavingsGoalModel(
+                      userId: AuthService.currentUserId,
+                      title: title,
+                      targetAmount: target,
+                      deadline: selectedDeadline,
+                    ),
                   );
                   if (ctx.mounted) Navigator.pop(ctx);
                   _load();
@@ -165,10 +208,38 @@ class _GoalCard extends StatelessWidget {
 
   const _GoalCard({required this.goal, required this.fmt, required this.onDeposit, required this.onDelete});
 
+  String? _estimatedCompletion() {
+    final daysSinceCreation = DateTime.now().difference(goal.createdAt).inDays;
+    if (daysSinceCreation <= 0 || goal.currentAmount <= 0) return null;
+    final remaining = goal.targetAmount - goal.currentAmount;
+    if (remaining <= 0) return null;
+    final dailyRate = goal.currentAmount / daysSinceCreation;
+    if (dailyRate <= 0) return null;
+    final daysToComplete = (remaining / dailyRate).ceil();
+    final estimatedDate = DateTime.now().add(Duration(days: daysToComplete));
+    return DateFormat('yyyy.MM.dd').format(estimatedDate);
+  }
+
   @override
   Widget build(BuildContext context) {
     final pct = goal.progress;
     final remaining = goal.targetAmount - goal.currentAmount;
+    final estimated = _estimatedCompletion();
+
+    String? dDayText;
+    Color dDayColor = const Color(0xFF2E75B6);
+    if (goal.deadline != null && remaining > 0) {
+      final daysLeft = goal.deadline!.difference(DateTime.now()).inDays;
+      if (daysLeft > 0) {
+        dDayText = 'D-$daysLeft';
+      } else if (daysLeft == 0) {
+        dDayText = 'D-Day';
+        dDayColor = Colors.orange;
+      } else {
+        dDayText = '목표일 +${-daysLeft}일';
+        dDayColor = Colors.red;
+      }
+    }
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -182,16 +253,25 @@ class _GoalCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(goal.title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF1F4E79))),
-              Row(
-                children: [
-                  IconButton(icon: const Icon(Icons.add_circle_outline, color: Color(0xFF2E75B6)), onPressed: onDeposit, padding: EdgeInsets.zero, constraints: const BoxConstraints()),
-                  const SizedBox(width: 4),
-                  IconButton(icon: const Icon(Icons.delete_outline, color: Colors.red), onPressed: onDelete, padding: EdgeInsets.zero, constraints: const BoxConstraints()),
-                ],
+              Expanded(
+                child: Text(goal.title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF1F4E79))),
               ),
+              if (dDayText != null) ...[
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: dDayColor.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: dDayColor.withValues(alpha: 0.4)),
+                  ),
+                  child: Text(dDayText, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: dDayColor)),
+                ),
+                const SizedBox(width: 6),
+              ],
+              IconButton(icon: const Icon(Icons.add_circle_outline, color: Color(0xFF2E75B6)), onPressed: onDeposit, padding: EdgeInsets.zero, constraints: const BoxConstraints()),
+              const SizedBox(width: 4),
+              IconButton(icon: const Icon(Icons.delete_outline, color: Colors.red), onPressed: onDelete, padding: EdgeInsets.zero, constraints: const BoxConstraints()),
             ],
           ),
           const SizedBox(height: 8),
@@ -223,6 +303,24 @@ class _GoalCard extends StatelessWidget {
                 const Text('목표 달성! 🎉', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12)),
             ],
           ),
+          if (goal.deadline != null || estimated != null) ...[
+            const Divider(height: 14, thickness: 0.5),
+            Row(
+              children: [
+                if (goal.deadline != null) ...[
+                  const Icon(Icons.flag_outlined, size: 12, color: Colors.grey),
+                  const SizedBox(width: 3),
+                  Text('목표일 ${DateFormat('yyyy.MM.dd').format(goal.deadline!)}', style: const TextStyle(color: Colors.grey, fontSize: 11)),
+                ],
+                if (goal.deadline != null && estimated != null) const Text('  ·  ', style: TextStyle(color: Colors.grey, fontSize: 11)),
+                if (estimated != null) ...[
+                  const Icon(Icons.trending_up, size: 12, color: Colors.blueGrey),
+                  const SizedBox(width: 3),
+                  Text('달성 예상일 $estimated', style: const TextStyle(color: Colors.blueGrey, fontSize: 11)),
+                ],
+              ],
+            ),
+          ],
         ],
       ),
     );
