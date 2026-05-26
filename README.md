@@ -28,6 +28,17 @@
 
 ---
 
+## 🚀 바로 실행 (설치 불필요)
+
+| 구분 | 링크 |
+|------|------|
+| **앱 실행** | [https://dnf98083-cmyk.github.io/chatbudget-flutter/app/](https://dnf98083-cmyk.github.io/chatbudget-flutter/app/) |
+| **WBS 일정표** | [https://dnf98083-cmyk.github.io/chatbudget-flutter/](https://dnf98083-cmyk.github.io/chatbudget-flutter/) |
+
+> Chrome 브라우저 권장. 첫 로딩에 10~20초 소요될 수 있습니다.
+
+---
+
 ## 📊 WBS 진행 현황
 
 > 시각적 트리 다이어그램: **[GitHub Pages에서 보기 →](https://dnf98083-cmyk.github.io/chatbudget-flutter/)**
