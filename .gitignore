@@ -1,5 +1,7 @@
 # API keys - do not commit
 assets/.env
+# Allow deployed web build assets (API key is already compiled into main.dart.js)
+!docs/app/assets/**
 
 # Miscellaneous
 *.class

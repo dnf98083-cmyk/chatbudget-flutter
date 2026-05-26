@@ -22,7 +22,11 @@ class AiService {
       '- 날짜: 어제=1, 그제=2, N일전=N, 오늘=0\n'
       '- 금액을 찾을 수 없으면: {"error": "no_amount"}';
 
-  static String get _apiKey => dotenv.env['GEMINI_API_KEY'] ?? '';
+  static String get _apiKey {
+    const compiled = String.fromEnvironment('GEMINI_API_KEY');
+    if (compiled.isNotEmpty) return compiled;
+    return dotenv.env['GEMINI_API_KEY'] ?? '';
+  }
 
   static Future<Map<String, dynamic>?> parseTransaction(String userInput) async {
     final apiKey = _apiKey;
