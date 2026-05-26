@@ -140,6 +140,11 @@ class DbHelper {
     await database.delete('transactions', where: 'id = ?', whereArgs: [id]);
   }
 
+  Future<void> deleteAllTransactions({required int userId}) async {
+    final database = await db;
+    await database.delete('transactions', where: 'user_id = ?', whereArgs: [userId]);
+  }
+
   Future<void> updateTransaction(TransactionModel t) async {
     final database = await db;
     await database.update('transactions', t.toMap(), where: 'id = ?', whereArgs: [t.id]);

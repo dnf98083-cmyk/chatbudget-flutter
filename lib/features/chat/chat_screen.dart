@@ -203,6 +203,13 @@ class _ChatScreenState extends State<ChatScreen> {
           TextButton(
             onPressed: () async {
               Navigator.pop(ctx);
+              await _confirmClearRecords();
+            },
+            child: const Text('기록 초기화', style: TextStyle(color: Colors.orange)),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
               await AuthService.logout();
             },
             child: const Text('로그아웃', style: TextStyle(color: Colors.red)),
@@ -214,6 +221,30 @@ class _ChatScreenState extends State<ChatScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _confirmClearRecords() async {
+    if (!mounted) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('기록 초기화'),
+        content: const Text('모든 거래 내역이 삭제됩니다.\n이 작업은 되돌릴 수 없어요.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('취소')),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('전체 삭제', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      await DbHelper.instance.deleteAllTransactions(userId: AuthService.currentUserId);
+      AuthService.notifyRefresh();
+      _addBot('🗑️ 모든 거래 내역이 초기화됐어요.');
+    }
   }
 
   @override
