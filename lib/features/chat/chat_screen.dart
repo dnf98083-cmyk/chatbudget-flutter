@@ -6,6 +6,7 @@ import '../../core/models/transaction_model.dart';
 import '../../core/parser/transaction_parser.dart';
 import '../../core/services/ai_service.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/services/category_service.dart';
 
 class _ChatMessage {
   final String text;
@@ -113,6 +114,8 @@ class _ChatScreenState extends State<ChatScreen> {
     await DbHelper.instance.insertTransaction(transaction);
     AuthService.notifyRefresh();
 
+    final isNewCategory = await CategoryService.addIfNew(transaction.category);
+
     final fmt = NumberFormat('#,###');
     final dateFmt = DateFormat('MM/dd');
     final typeLabel = transaction.type == 'income' ? '수입' : '지출';
@@ -125,6 +128,10 @@ class _ChatScreenState extends State<ChatScreen> {
       '${fmt.format(transaction.amount)}원 $typeLabel\n'
       '"${transaction.description}"',
     );
+
+    if (isNewCategory) {
+      _addBot('🏷️ 새 카테고리 "${transaction.category}"이(가) 추가됐어요!\n내역 수정·통계에서도 사용할 수 있습니다.');
+    }
 
     // 저축 카테고리면 저축 목표에도 반영 제안
     if (transaction.category == '저축') {

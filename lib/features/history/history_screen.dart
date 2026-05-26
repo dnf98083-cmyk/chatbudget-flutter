@@ -3,8 +3,7 @@ import 'package:intl/intl.dart';
 import '../../core/database/db_helper.dart';
 import '../../core/models/transaction_model.dart';
 import '../../core/services/auth_service.dart';
-
-const _categories = ['식비','카페','교통','쇼핑','편의점','의료','문화','통신','저축','수입','기타'];
+import '../../core/services/category_service.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -49,13 +48,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
     AuthService.notifyRefresh();
   }
 
-  void _showEditDialog(TransactionModel t) {
+  void _showEditDialog(TransactionModel t) async {
+    final categories = await CategoryService.getAll();
     final amtCtrl = TextEditingController(text: t.amount.toString());
     final descCtrl = TextEditingController(text: t.description);
     String type = t.type;
     String category = t.category;
     String? errorMsg;
 
+    if (!mounted) return;
     showDialog(
       context: context,
       builder: (ctx) => StatefulBuilder(
@@ -89,9 +90,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 ]),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
-                  initialValue: _categories.contains(category) ? category : '기타',
+                  initialValue: categories.contains(category) ? category : '기타',
                   decoration: const InputDecoration(labelText: '카테고리'),
-                  items: _categories.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+                  items: categories.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
                   onChanged: (v) => setDlg(() => category = v ?? category),
                 ),
                 const SizedBox(height: 8),
@@ -232,7 +233,7 @@ class _TransactionTile extends StatelessWidget {
                   color: isExpense ? const Color(0xFFFFEBEE) : const Color(0xFFE8F5E9),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Center(child: Text(_categoryEmoji(t.category), style: const TextStyle(fontSize: 18))),
+                child: Center(child: Text(CategoryService.emoji(t.category), style: const TextStyle(fontSize: 18))),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -262,12 +263,4 @@ class _TransactionTile extends StatelessWidget {
     );
   }
 
-  String _categoryEmoji(String category) {
-    const map = {
-      '식비': '🍚', '카페': '☕', '교통': '🚌', '쇼핑': '🛍️',
-      '편의점': '🏪', '의료': '💊', '문화': '🎬', '통신': '📱',
-      '저축': '🏦', '수입': '💰', '기타': '💳',
-    };
-    return map[category] ?? '💳';
-  }
 }
