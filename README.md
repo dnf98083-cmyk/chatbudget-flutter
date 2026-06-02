@@ -9,6 +9,7 @@
 | 구분 | 링크 |
 |------|------|
 | **앱 실행** | [https://dnf98083-cmyk.github.io/chatbudget-flutter/app/](https://dnf98083-cmyk.github.io/chatbudget-flutter/app/) |
+| **발표 슬라이드** | [https://dnf98083-cmyk.github.io/chatbudget-flutter/presentation.html](https://dnf98083-cmyk.github.io/chatbudget-flutter/presentation.html) |
 | **WBS 일정표** | [https://dnf98083-cmyk.github.io/chatbudget-flutter/](https://dnf98083-cmyk.github.io/chatbudget-flutter/) |
 
 > Chrome 브라우저 권장. 첫 로딩 10~20초 소요.
