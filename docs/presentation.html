@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChatBudget 발표</title>
+<style>
+  :root {
+    --primary: #1F4E79;
+    --blue: #2E75B6;
+    --light-blue: #D6E4F7;
+    --green: #70AD47;
+    --orange: #ED7D31;
+    --bg: #F0F4F8;
+    --white: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Malgun Gothic', 'Segoe UI', sans-serif;
+    background: #111;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* ── Slide container ── */
+  .deck {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 80px;
+    opacity: 0;
+    transform: translateX(60px);
+    transition: opacity .4s ease, transform .4s ease;
+    pointer-events: none;
+  }
+  .slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+  .slide.prev {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+
+  /* ── Slide themes ── */
+  .theme-title  { background: var(--primary); color: white; }
+  .theme-dark   { background: #162c42; color: white; }
+  .theme-light  { background: var(--bg); color: #1a1a2e; }
+  .theme-white  { background: white; color: #1a1a2e; }
+  .theme-green  { background: #1a3a1a; color: white; }
+
+  /* ── Typography ── */
+  .slide-num {
+    position: absolute;
+    bottom: 24px;
+    right: 36px;
+    font-size: 0.75rem;
+    opacity: 0.4;
+  }
+  .tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 16px;
+  }
+  h1 { font-size: 3.2rem; font-weight: 900; line-height: 1.15; }
+  h2 { font-size: 2rem; font-weight: 800; margin-bottom: 28px; }
+  h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 12px; }
+  p  { font-size: 1rem; line-height: 1.7; opacity: 0.85; }
+
+  .subtitle {
+    font-size: 1.25rem;
+    opacity: 0.75;
+    margin-top: 16px;
+    line-height: 1.6;
+  }
+  .big { font-size: 1.4rem; }
+  .highlight { color: #7EC8E3; font-weight: 700; }
+  .highlight-green { color: #A8E063; font-weight: 700; }
+  .highlight-orange { color: #FFB347; font-weight: 700; }
+
+  /* ── Layout helpers ── */
+  .center { text-align: center; }
+  .left   { align-items: flex-start; }
+  .w-full { width: 100%; }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    width: 100%;
+  }
+  .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    width: 100%;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 24px 28px;
+  }
+  .card-light {
+    background: white;
+    border-radius: 16px;
+    padding: 24px 28px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  .card-blue {
+    background: var(--blue);
+    border-radius: 16px;
+    padding: 24px 28px;
+    color: white;
+  }
+
+  /* ── Demo link button ── */
+  .btn {
+    display: inline-block;
+    padding: 14px 36px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    margin-top: 24px;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+  .btn-white { background: white; color: var(--primary); }
+  .btn-blue  { background: var(--blue); color: white; }
+  .btn-outline { border: 2px solid white; color: white; }
+
+  /* ── Table ── */
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  th { background: var(--primary); color: white; padding: 10px 14px; text-align: left; font-weight: 700; }
+  td { padding: 9px 14px; border-bottom: 1px solid #e2e8f0; }
+  tr:nth-child(even) td { background: #F7FAFF; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+  .badge-done   { background: #D1FAE5; color: #065F46; }
+  .badge-must   { background: #DBEAFE; color: #1E40AF; }
+  .badge-should { background: #FEF3C7; color: #92400E; }
+  .badge-could  { background: #F3E8FF; color: #6B21A8; }
+
+  /* ── Code block ── */
+  .code {
+    background: #0d1117;
+    border-radius: 12px;
+    padding: 20px 24px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.82rem;
+    line-height: 1.8;
+    color: #e6edf3;
+    width: 100%;
+    border-left: 4px solid var(--blue);
+  }
+  .code .c  { color: #8b949e; }
+  .code .kw { color: #ff7b72; }
+  .code .str{ color: #a5d6ff; }
+  .code .cmd{ color: #7ee787; }
+
+  /* ── List ── */
+  ul.fancy { list-style: none; }
+  ul.fancy li { display: flex; gap: 12px; margin-bottom: 12px; font-size: 0.95rem; line-height: 1.6; }
+  ul.fancy li::before { content: "→"; color: var(--blue); font-weight: 900; flex-shrink: 0; }
+  .theme-dark ul.fancy li::before, .theme-title ul.fancy li::before { color: #7EC8E3; }
+
+  /* ── Progress bar ── */
+  .prog-wrap { background: rgba(255,255,255,0.15); border-radius: 8px; height: 20px; width: 100%; margin-top: 12px; overflow: hidden; }
+  .prog-bar  { height: 100%; border-radius: 8px; background: linear-gradient(90deg, #70AD47, #A8E063); transition: width 1s ease; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; font-size: 0.72rem; font-weight: 700; color: white; }
+
+  /* ── Layer diagram ── */
+  .layer {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+  .layer-icon { font-size: 1.4rem; width: 36px; flex-shrink: 0; }
+  .layer-name { font-weight: 800; font-size: 0.95rem; min-width: 130px; }
+  .layer-desc { font-size: 0.82rem; opacity: 0.8; }
+
+  /* ── Nav ── */
+  #nav {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+    align-items: center;
+  }
+  #nav button {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 24px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-family: inherit;
+    transition: background .2s;
+  }
+  #nav button:hover { background: rgba(255,255,255,0.25); }
+  #nav .dots { display: flex; gap: 6px; align-items: center; }
+  #nav .dot  { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.25); transition: background .3s; }
+  #nav .dot.on { background: white; }
+
+  /* ── Scenario chat bubble ── */
+  .chat-demo { display: flex; flex-direction: column; gap: 10px; }
+  .bubble {
+    max-width: 80%;
+    padding: 12px 18px;
+    border-radius: 18px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .bubble-user  { background: var(--blue); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .bubble-bot   { background: white; color: #1a1a2e; align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+
+  /* ── Emoji big ── */
+  .emoji-big { font-size: 3.5rem; margin-bottom: 16px; }
+
+  /* ── Q&A ── */
+  .qa-item { margin-bottom: 20px; }
+  .qa-q { font-weight: 700; color: #7EC8E3; font-size: 0.9rem; margin-bottom: 5px; }
+  .qa-a { font-size: 0.88rem; opacity: 0.85; line-height: 1.6; }
+
+  /* ── Score card ── */
+  .score-big { font-size: 4rem; font-weight: 900; color: #A8E063; }
+  .score-label { font-size: 1rem; opacity: 0.7; }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- ① 타이틀 -->
+  <div class="slide theme-title center active" id="s0">
+    <div class="emoji-big">💬</div>
+    <h1>ChatBudget</h1>
+    <p class="subtitle">
+      채팅창에 한 줄만 입력하면<br>
+      <span class="highlight">AI가 자동으로 가계부를 기록</span>해주는 Flutter 앱
+    </p>
+    <a class="btn btn-white" href="https://dnf98083-cmyk.github.io/chatbudget-flutter/app/" target="_blank">
+      🚀 앱 바로 열기
+    </a>
+    <span class="slide-num">1 / 10</span>
+  </div>
+
+  <!-- ② 왜 만들었나 -->
+  <div class="slide theme-dark left" id="s1">
+    <div class="tag">Problem & Solution</div>
+    <h2>왜 만들었나?</h2>
+    <div class="two-col w-full">
+      <div class="card">
+        <h3>😩 문제</h3>
+        <ul class="fancy">
+          <li>가계부 앱은 많지만 입력이 귀찮아서 결국 안 쓴다</li>
+          <li>카테고리·날짜·금액을 일일이 탭해야 한다</li>
+          <li>1주일 후엔 기록이 끊긴다</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="highlight">✅ 해결</h3>
+        <ul class="fancy">
+          <li><span class="highlight">"스타벅스 6000원"</span> 한 줄 입력</li>
+          <li>AI가 금액·날짜·카테고리 자동 추출</li>
+          <li>설치 없이 웹 링크 하나로 바로 사용</li>
+        </ul>
+      </div>
+    </div>
+    <span class="slide-num">2 / 10</span>
+  </div>
+
+  <!-- ③ 데모 시나리오 -->
+  <div class="slide theme-dark left" id="s2">
+    <div class="tag">Live Demo</div>
+    <h2>이렇게 씁니다</h2>
+    <div class="two-col w-full">
+      <div class="chat-demo">
+        <div class="bubble bubble-user">스타벅스 아메리카노 6000</div>
+        <div class="bubble bubble-bot">💸 기록 완료! ✨<br>카페 · 6,000원 지출<br>"스타벅스 아메리카노"</div>
+        <div class="bubble bubble-user">어제 택시 12000원</div>
+        <div class="bubble bubble-bot">💸 기록 완료! ✨<br>교통 · 12,000원 지출 (어제 날짜)<br>"택시"</div>
+        <div class="bubble bubble-user">헬스장 8만원</div>
+        <div class="bubble bubble-bot">💸 기록 완료! ✨<br>🏷️ 새 카테고리 "헬스장" 추가됨!<br>80,000원 지출</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="card">
+          <h3>✨ AI 파싱</h3>
+          <p style="font-size:0.85rem;">Gemini 2.0 Flash Lite가 자연어를 JSON으로 변환. AI 실패 시 rule-based 파서로 자동 폴백.</p>
+        </div>
+        <div class="card">
+          <h3>🏷️ 카테고리 자동 생성</h3>
+          <p style="font-size:0.85rem;">기존 카테고리에 없으면 AI가 새 카테고리명을 직접 만들어 저장.</p>
+        </div>
+        <div class="card">
+          <h3>📊 4개 화면</h3>
+          <p style="font-size:0.85rem;">채팅 · 내역 · 통계(차트) · 저축 목표</p>
+        </div>
+      </div>
+    </div>
+    <span class="slide-num">3 / 10</span>
+  </div>
+
+  <!-- ④ Must 기능 -->
+  <div class="slide theme-white left" id="s3">
+    <div class="tag" style="color:var(--primary);">Requirements — MoSCoW</div>
+    <h2 style="color:var(--primary);">핵심 기능 목록</h2>
+    <table>
+      <thead><tr><th>구분</th><th>기능</th><th>상태</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-must">Must</span></td><td>채팅형 자연어 입력 & AI 파싱</td><td>✅</td></tr>
+        <tr><td><span class="badge badge-must">Must</span></td><td>거래 내역 조회 · 수정 · 삭제</td><td>✅</td></tr>
+        <tr><td><span class="badge badge-must">Must</span></td><td>로그인 / 계정별 데이터 분리</td><td>✅</td></tr>
+        <tr><td><span class="badge badge-must">Must</span></td><td>월별 통계 & 도넛 차트</td><td>✅</td></tr>
+        <tr><td><span class="badge badge-must">Must</span></td><td>SQLite 오프라인 저장</td><td>✅</td></tr>
+        <tr><td><span class="badge badge-should">Should</span></td><td>저축 목표 관리 & 달성 예상일</td><td>✅</td></tr>
+        <tr><td><span class="badge badge-could">Could</span></td><td>일별 막대 차트 / 예산 관리</td><td>✅</td></tr>
+        <tr><td><span class="badge badge-could">Could</span></td><td>AI 신규 카테고리 자동 생성</td><td>✅</td></tr>
+      </tbody>
+    </table>
+    <span class="slide-num">4 / 10</span>
+  </div>
+
+  <!-- ⑤ 아키텍처 -->
+  <div class="slide theme-dark left" id="s4">
+    <div class="tag">Architecture</div>
+    <h2>4레이어 아키텍처</h2>
+    <div class="w-full">
+      <div class="layer" style="background:rgba(46,117,182,0.3);border-left:4px solid #2E75B6;">
+        <div class="layer-icon">🖥️</div>
+        <div class="layer-name">Presentation</div>
+        <div class="layer-desc">lib/features/ — ChatScreen / HistoryScreen / StatsScreen / SavingsScreen (UI만 담당)</div>
+      </div>
+      <div class="layer" style="background:rgba(112,173,71,0.3);border-left:4px solid #70AD47;">
+        <div class="layer-icon">🧠</div>
+        <div class="layer-name">Domain</div>
+        <div class="layer-desc">lib/core/parser/ — TransactionParser (자연어 파싱 비즈니스 로직, UI와 분리 → 독립 테스트 가능)</div>
+      </div>
+      <div class="layer" style="background:rgba(237,125,49,0.3);border-left:4px solid #ED7D31;">
+        <div class="layer-icon">💾</div>
+        <div class="layer-name">Data</div>
+        <div class="layer-desc">lib/core/database/ — DbHelper 싱글톤 (SQLite CRUD), lib/core/services/ — AiService, AuthService</div>
+      </div>
+      <div class="layer" style="background:rgba(255,255,255,0.08);border-left:4px solid #aaa;">
+        <div class="layer-icon">🗄️</div>
+        <div class="layer-name">Infrastructure</div>
+        <div class="layer-desc">chatbudget.db — 로컬 SQLite 파일 (기기 내 저장, 서버 없음)</div>
+      </div>
+    </div>
+    <span class="slide-num">5 / 10</span>
+  </div>
+
+  <!-- ⑥ ADR & 기술 스택 -->
+  <div class="slide theme-white left" id="s5">
+    <div class="tag" style="color:var(--primary);">Architecture Decision Records</div>
+    <h2 style="color:var(--primary);">기술 선택 이유 (ADR 3건)</h2>
+    <div class="three-col w-full">
+      <div class="card-light">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--blue);letter-spacing:1px;margin-bottom:8px;">ADR-0001</div>
+        <h3 style="color:var(--primary);margin-bottom:10px;">Flutter</h3>
+        <p style="font-size:0.82rem;">단일 Dart 코드로 Web·Android·iOS 동시 지원.<br><br>대안: React Native(웹 미지원), Native(플랫폼별 코드)<br><br><strong>→ 발표를 웹 링크 하나로 즉시 데모 가능</strong></p>
+      </div>
+      <div class="card-light">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--blue);letter-spacing:1px;margin-bottom:8px;">ADR-0002</div>
+        <h3 style="color:var(--primary);margin-bottom:10px;">setState</h3>
+        <p style="font-size:0.82rem;">소규모 앱에 Riverpod·Bloc 등 외부 패키지 불필요.<br><br>실시간 갱신은 ValueNotifier로 보완.<br><br><strong>→ 학습 비용 최소화, 코드 단순</strong></p>
+      </div>
+      <div class="card-light">
+        <div style="font-size:0.7rem;font-weight:700;color:var(--blue);letter-spacing:1px;margin-bottom:8px;">ADR-0003</div>
+        <h3 style="color:var(--primary);margin-bottom:10px;">SQLite</h3>
+        <p style="font-size:0.82rem;">오프라인 우선. 개인 금융 데이터를 서버로 보내지 않음.<br><br>대안: Firebase(온라인 필요), Hive(쿼리 제한)<br><br><strong>→ 날짜 범위 집계 쿼리 필요</strong></p>
+      </div>
+    </div>
+    <span class="slide-num">6 / 10</span>
+  </div>
+
+  <!-- ⑦ AI Agent 활용 -->
+  <div class="slide theme-dark left" id="s6">
+    <div class="tag">AI Agent</div>
+    <h2>Claude Code로 전 과정 협업</h2>
+    <div class="two-col w-full">
+      <div>
+        <ul class="fancy">
+          <li>기획서 · 요구사항 · WBS · 일정 자동 생성</li>
+          <li>4레이어 아키텍처 설계 & Mermaid 다이어그램</li>
+          <li>전체 Flutter 코드 구현 (채팅·파서·DB·차트)</li>
+          <li>단위 테스트 자동 작성</li>
+          <li>GitHub Pages 빌드·배포 스크립트</li>
+          <li>매 기능 완료 후 WBS·git 커밋 자동 갱신</li>
+          <li>README · ADR · setup · testing 문서 생성</li>
+        </ul>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:16px;">
+        <div>
+          <div style="font-size:0.75rem;opacity:0.6;margin-bottom:4px;">사용 도구</div>
+          <div style="font-weight:700;font-size:1.1rem;">Claude Code (CLI)</div>
+        </div>
+        <div>
+          <div style="font-size:0.75rem;opacity:0.6;margin-bottom:4px;">기록 문서</div>
+          <div style="font-weight:700;">AGENTS.md · AUTHORING.md</div>
+        </div>
+        <div>
+          <div style="font-size:0.75rem;opacity:0.6;margin-bottom:4px;">핵심 원칙</div>
+          <div style="font-size:0.85rem;line-height:1.6;">"AI가 만든 것이라도<br><span class="highlight">본인이 모두 이해하고 설명</span>할 수 있어야 한다"</div>
+        </div>
+      </div>
+    </div>
+    <span class="slide-num">7 / 10</span>
+  </div>
+
+  <!-- ⑧ WBS 진행률 -->
+  <div class="slide theme-dark center" id="s7">
+    <div class="tag">WBS Progress</div>
+    <h2>프로젝트 진행률</h2>
+    <div class="score-big">97%</div>
+    <div class="score-label">완료 29 / 전체 30 항목</div>
+    <div class="prog-wrap" style="max-width:600px;margin-top:24px;">
+      <div class="prog-bar" style="width:97%;">97%</div>
+    </div>
+    <div class="three-col w-full" style="margin-top:32px;max-width:700px;">
+      <div class="card center">
+        <div style="font-size:1.8rem;font-weight:900;color:#A8E063;">✅</div>
+        <div style="font-size:0.8rem;margin-top:6px;">기획·설계<br>완료</div>
+      </div>
+      <div class="card center">
+        <div style="font-size:1.8rem;font-weight:900;color:#A8E063;">✅</div>
+        <div style="font-size:0.8rem;margin-top:6px;">전 기능<br>구현 완료</div>
+      </div>
+      <div class="card center">
+        <div style="font-size:1.8rem;font-weight:900;color:#A8E063;">✅</div>
+        <div style="font-size:0.8rem;margin-top:6px;">웹 배포<br>완료</div>
+      </div>
+    </div>
+    <a class="btn btn-outline" href="https://dnf98083-cmyk.github.io/chatbudget-flutter/" target="_blank" style="margin-top:20px;font-size:0.85rem;">
+      📊 WBS 간트차트 보기
+    </a>
+    <span class="slide-num">8 / 10</span>
+  </div>
+
+  <!-- ⑨ 개발자 기본 소양 Q&A -->
+  <div class="slide theme-white left" id="s8">
+    <div class="tag" style="color:var(--primary);">Q&A 대비 — 개발자 기본 소양</div>
+    <h2 style="color:var(--primary);">예상 질문 & 답변</h2>
+    <div class="two-col w-full">
+      <div>
+        <div class="qa-item" style="color:#1a1a2e;">
+          <div class="qa-q" style="color:var(--primary);">Q. 플랫폼 선택 이유?</div>
+          <div class="qa-a">Flutter — 단일 코드로 Web·Android 동시 지원. 웹 링크 하나로 발표 데모 가능. ADR-0001 참조.</div>
+        </div>
+        <div class="qa-item" style="color:#1a1a2e;">
+          <div class="qa-q" style="color:var(--primary);">Q. 앱 구조?</div>
+          <div class="qa-a">4레이어: Presentation → Domain(파서) → Data(DbHelper) → Infrastructure(SQLite). 파서를 UI와 분리해 독립 테스트 가능.</div>
+        </div>
+        <div class="qa-item" style="color:#1a1a2e;">
+          <div class="qa-q" style="color:var(--primary);">Q. 개발 환경 설정?</div>
+          <div class="qa-a"><code style="background:#f0f4f8;padding:2px 6px;border-radius:4px;font-size:0.82rem;">flutter pub get → flutter run</code> 두 줄. docs/setup.md 참조.</div>
+        </div>
+      </div>
+      <div>
+        <div class="qa-item" style="color:#1a1a2e;">
+          <div class="qa-q" style="color:var(--primary);">Q. 빌드·배포?</div>
+          <div class="qa-a"><code style="background:#f0f4f8;padding:2px 6px;border-radius:4px;font-size:0.82rem;">flutter build web --release</code> → docs/app/ 복사 → git push → GitHub Pages 자동 서빙.</div>
+        </div>
+        <div class="qa-item" style="color:#1a1a2e;">
+          <div class="qa-q" style="color:var(--primary);">Q. 테스트?</div>
+          <div class="qa-a"><code style="background:#f0f4f8;padding:2px 6px;border-radius:4px;font-size:0.82rem;">flutter test</code> — TransactionParser 단위 테스트 3개 (금액·날짜·만원 단위).</div>
+        </div>
+        <div class="qa-item" style="color:#1a1a2e;">
+          <div class="qa-q" style="color:var(--primary);">Q. API 호출 위치?</div>
+          <div class="qa-a">외부 AI → AiService (Data Layer). 내부 DB → DbHelper (Data Layer). Presentation은 직접 DB 호출 안 함.</div>
+        </div>
+      </div>
+    </div>
+    <span class="slide-num">9 / 10</span>
+  </div>
+
+  <!-- ⑩ 마무리 -->
+  <div class="slide theme-title center" id="s9">
+    <div class="emoji-big">🎯</div>
+    <h2>감사합니다</h2>
+    <p class="subtitle" style="max-width:600px;">
+      "채팅창에 한 줄만 입력하면 AI가 가계부를 기록한다"<br>
+      <span class="highlight">ChatBudget</span>
+    </p>
+    <div style="display:flex;gap:16px;margin-top:32px;flex-wrap:wrap;justify-content:center;">
+      <a class="btn btn-white" href="https://dnf98083-cmyk.github.io/chatbudget-flutter/app/" target="_blank">🚀 앱 데모</a>
+      <a class="btn btn-outline" href="https://dnf98083-cmyk.github.io/chatbudget-flutter/" target="_blank">📊 WBS</a>
+      <a class="btn btn-outline" href="https://github.com/dnf98083-cmyk/chatbudget-flutter" target="_blank">💻 GitHub</a>
+    </div>
+    <span class="slide-num">10 / 10</span>
+  </div>
+
+</div><!-- /deck -->
+
+<!-- Navigation -->
+<div id="nav">
+  <button onclick="go(-1)">◀</button>
+  <div class="dots" id="dots"></div>
+  <button onclick="go(1)">▶</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsEl = document.getElementById('dots');
+  let cur = 0;
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' on' : '');
+    d.onclick = () => goTo(i);
+    dotsEl.appendChild(d);
+  });
+
+  function goTo(n) {
+    slides[cur].classList.remove('active');
+    slides[cur].classList.add('prev');
+    setTimeout(() => slides[cur < n ? cur : cur].classList.remove('prev'), 400);
+
+    const prev = cur;
+    cur = Math.max(0, Math.min(slides.length - 1, n));
+
+    slides[prev].classList.remove('active', 'prev');
+    slides[cur].classList.add('active');
+
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('on', i === cur));
+  }
+
+  function go(dir) { goTo(cur + dir); }
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') go(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')  go(-1);
+    if (e.key === 'Home') goTo(0);
+    if (e.key === 'End')  goTo(slides.length - 1);
+  });
+
+  // Touch swipe
+  let tx = 0;
+  document.addEventListener('touchstart', e => tx = e.touches[0].clientX);
+  document.addEventListener('touchend',   e => {
+    const dx = tx - e.changedTouches[0].clientX;
+    if (Math.abs(dx) > 50) go(dx > 0 ? 1 : -1);
+  });
+</script>
+</body>
+</html>
