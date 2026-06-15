@@ -43,7 +43,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 60px 80px;
+    padding: 48px 72px;
     opacity: 0;
     transform: translateX(60px);
     transition: opacity .4s ease, transform .4s ease;
@@ -75,20 +75,20 @@
     opacity: 0.4;
   }
   .tag {
-    font-size: 0.7rem;
+    font-size: 0.85rem;
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
     opacity: 0.6;
     margin-bottom: 16px;
   }
-  h1 { font-size: 3.2rem; font-weight: 900; line-height: 1.15; }
-  h2 { font-size: 2rem; font-weight: 800; margin-bottom: 28px; }
-  h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 12px; }
-  p  { font-size: 1rem; line-height: 1.7; opacity: 0.85; }
+  h1 { font-size: 4rem; font-weight: 900; line-height: 1.15; }
+  h2 { font-size: 2.6rem; font-weight: 800; margin-bottom: 28px; }
+  h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 12px; }
+  p  { font-size: 1.1rem; line-height: 1.7; opacity: 0.85; }
 
   .subtitle {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     opacity: 0.75;
     margin-top: 16px;
     line-height: 1.6;
@@ -153,11 +153,11 @@
   .btn-outline { border: 2px solid white; color: white; }
 
   /* ── Table ── */
-  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
-  th { background: var(--primary); color: white; padding: 10px 14px; text-align: left; font-weight: 700; }
-  td { padding: 9px 14px; border-bottom: 1px solid #e2e8f0; }
+  table { width: 100%; border-collapse: collapse; font-size: 1rem; }
+  th { background: var(--primary); color: white; padding: 12px 16px; text-align: left; font-weight: 700; }
+  td { padding: 11px 16px; border-bottom: 1px solid #e2e8f0; }
   tr:nth-child(even) td { background: #F7FAFF; }
-  .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+  .badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 0.88rem; font-weight: 700; }
   .badge-done   { background: #D1FAE5; color: #065F46; }
   .badge-must   { background: #DBEAFE; color: #1E40AF; }
   .badge-should { background: #FEF3C7; color: #92400E; }
@@ -182,7 +182,7 @@
 
   /* ── List ── */
   ul.fancy { list-style: none; }
-  ul.fancy li { display: flex; gap: 12px; margin-bottom: 12px; font-size: 0.95rem; line-height: 1.6; }
+  ul.fancy li { display: flex; gap: 12px; margin-bottom: 14px; font-size: 1.1rem; line-height: 1.6; }
   ul.fancy li::before { content: "→"; color: var(--blue); font-weight: 900; flex-shrink: 0; }
   .theme-dark ul.fancy li::before, .theme-title ul.fancy li::before { color: #7EC8E3; }
 
@@ -200,9 +200,9 @@
     margin-bottom: 10px;
     width: 100%;
   }
-  .layer-icon { font-size: 1.4rem; width: 36px; flex-shrink: 0; }
-  .layer-name { font-weight: 800; font-size: 0.95rem; min-width: 130px; }
-  .layer-desc { font-size: 0.82rem; opacity: 0.8; }
+  .layer-icon { font-size: 1.8rem; width: 42px; flex-shrink: 0; }
+  .layer-name { font-weight: 800; font-size: 1.15rem; min-width: 160px; }
+  .layer-desc { font-size: 1rem; opacity: 0.8; }
 
   /* ── Nav ── */
   #nav {
@@ -309,10 +309,10 @@
   .chat-demo { display: flex; flex-direction: column; gap: 10px; }
   .bubble {
     max-width: 80%;
-    padding: 12px 18px;
+    padding: 14px 22px;
     border-radius: 18px;
-    font-size: 0.9rem;
-    line-height: 1.5;
+    font-size: 1.05rem;
+    line-height: 1.6;
   }
   .bubble-user  { background: var(--blue); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
   .bubble-bot   { background: white; color: #1a1a2e; align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
@@ -322,11 +322,11 @@
 
   /* ── Q&A ── */
   .qa-item { margin-bottom: 20px; }
-  .qa-q { font-weight: 700; color: #7EC8E3; font-size: 0.9rem; margin-bottom: 5px; }
-  .qa-a { font-size: 0.88rem; opacity: 0.85; line-height: 1.6; }
+  .qa-q { font-weight: 700; color: #7EC8E3; font-size: 1.05rem; margin-bottom: 6px; }
+  .qa-a { font-size: 1rem; opacity: 0.85; line-height: 1.6; }
 
   /* ── Score card ── */
-  .score-big { font-size: 4rem; font-weight: 900; color: #A8E063; }
+  .score-big { font-size: 5.5rem; font-weight: 900; color: #A8E063; }
   .score-label { font-size: 1rem; opacity: 0.7; }
 </style>
 </head>
@@ -391,15 +391,15 @@
       <div style="display:flex;flex-direction:column;gap:16px;">
         <div class="card">
           <h3>✨ AI 파싱</h3>
-          <p style="font-size:0.85rem;">Gemini 2.0 Flash Lite가 자연어를 JSON으로 변환. AI 실패 시 rule-based 파서로 자동 폴백.</p>
+          <p style="font-size:1rem;">Gemini 2.0 Flash Lite가 자연어를 JSON으로 변환. AI 실패 시 rule-based 파서로 자동 폴백.</p>
         </div>
         <div class="card">
           <h3>🏷️ 카테고리 자동 생성</h3>
-          <p style="font-size:0.85rem;">기존 카테고리에 없으면 AI가 새 카테고리명을 직접 만들어 저장.</p>
+          <p style="font-size:1rem;">기존 카테고리에 없으면 AI가 새 카테고리명을 직접 만들어 저장.</p>
         </div>
         <div class="card">
           <h3>📊 4개 화면</h3>
-          <p style="font-size:0.85rem;">채팅 · 내역 · 통계(차트) · 저축 목표</p>
+          <p style="font-size:1rem;">채팅 · 내역 · 통계(차트) · 저축 목표</p>
         </div>
       </div>
     </div>
@@ -463,17 +463,17 @@
       <div class="card-light">
         <div style="font-size:0.7rem;font-weight:700;color:var(--blue);letter-spacing:1px;margin-bottom:8px;">ADR-0001</div>
         <h3 style="color:var(--primary);margin-bottom:10px;">Flutter</h3>
-        <p style="font-size:0.82rem;">단일 Dart 코드로 Web·Android·iOS 동시 지원.<br><br>대안: React Native(웹 미지원), Native(플랫폼별 코드)<br><br><strong>→ 발표를 웹 링크 하나로 즉시 데모 가능</strong></p>
+        <p style="font-size:0.96rem;">단일 Dart 코드로 Web·Android·iOS 동시 지원.<br><br>대안: React Native(웹 미지원), Native(플랫폼별 코드)<br><br><strong>→ 발표를 웹 링크 하나로 즉시 데모 가능</strong></p>
       </div>
       <div class="card-light">
         <div style="font-size:0.7rem;font-weight:700;color:var(--blue);letter-spacing:1px;margin-bottom:8px;">ADR-0002</div>
         <h3 style="color:var(--primary);margin-bottom:10px;">setState</h3>
-        <p style="font-size:0.82rem;">소규모 앱에 Riverpod·Bloc 등 외부 패키지 불필요.<br><br>실시간 갱신은 ValueNotifier로 보완.<br><br><strong>→ 학습 비용 최소화, 코드 단순</strong></p>
+        <p style="font-size:0.96rem;">소규모 앱에 Riverpod·Bloc 등 외부 패키지 불필요.<br><br>실시간 갱신은 ValueNotifier로 보완.<br><br><strong>→ 학습 비용 최소화, 코드 단순</strong></p>
       </div>
       <div class="card-light">
         <div style="font-size:0.7rem;font-weight:700;color:var(--blue);letter-spacing:1px;margin-bottom:8px;">ADR-0003</div>
         <h3 style="color:var(--primary);margin-bottom:10px;">SQLite</h3>
-        <p style="font-size:0.82rem;">오프라인 우선. 개인 금융 데이터를 서버로 보내지 않음.<br><br>대안: Firebase(온라인 필요), Hive(쿼리 제한)<br><br><strong>→ 날짜 범위 집계 쿼리 필요</strong></p>
+        <p style="font-size:0.96rem;">오프라인 우선. 개인 금융 데이터를 서버로 보내지 않음.<br><br>대안: Firebase(온라인 필요), Hive(쿼리 제한)<br><br><strong>→ 날짜 범위 집계 쿼리 필요</strong></p>
       </div>
     </div>
     <span class="slide-num">6 / 10</span>
@@ -497,15 +497,15 @@
       </div>
       <div class="card" style="display:flex;flex-direction:column;gap:16px;">
         <div>
-          <div style="font-size:0.75rem;opacity:0.6;margin-bottom:4px;">사용 도구</div>
+          <div style="font-size:0.88rem;opacity:0.6;margin-bottom:4px;">사용 도구</div>
           <div style="font-weight:700;font-size:1.1rem;">Claude Code (CLI)</div>
         </div>
         <div>
-          <div style="font-size:0.75rem;opacity:0.6;margin-bottom:4px;">기록 문서</div>
+          <div style="font-size:0.88rem;opacity:0.6;margin-bottom:4px;">기록 문서</div>
           <div style="font-weight:700;">AGENTS.md · AUTHORING.md</div>
         </div>
         <div>
-          <div style="font-size:0.75rem;opacity:0.6;margin-bottom:4px;">핵심 원칙</div>
+          <div style="font-size:0.88rem;opacity:0.6;margin-bottom:4px;">핵심 원칙</div>
           <div style="font-size:0.85rem;line-height:1.6;">"AI가 만든 것이라도<br><span class="highlight">본인이 모두 이해하고 설명</span>할 수 있어야 한다"</div>
         </div>
       </div>
@@ -525,15 +525,15 @@
     <div class="three-col w-full" style="margin-top:32px;max-width:700px;">
       <div class="card center">
         <div style="font-size:1.8rem;font-weight:900;color:#A8E063;">✅</div>
-        <div style="font-size:0.8rem;margin-top:6px;">기획·설계<br>완료</div>
+        <div style="font-size:0.95rem;margin-top:6px;">기획·설계<br>완료</div>
       </div>
       <div class="card center">
         <div style="font-size:1.8rem;font-weight:900;color:#A8E063;">✅</div>
-        <div style="font-size:0.8rem;margin-top:6px;">전 기능<br>구현 완료</div>
+        <div style="font-size:0.95rem;margin-top:6px;">전 기능<br>구현 완료</div>
       </div>
       <div class="card center">
         <div style="font-size:1.8rem;font-weight:900;color:#A8E063;">✅</div>
-        <div style="font-size:0.8rem;margin-top:6px;">웹 배포<br>완료</div>
+        <div style="font-size:0.95rem;margin-top:6px;">웹 배포<br>완료</div>
       </div>
     </div>
     <a class="btn btn-outline" href="https://dnf98083-cmyk.github.io/chatbudget-flutter/" target="_blank" style="margin-top:20px;font-size:0.85rem;">
