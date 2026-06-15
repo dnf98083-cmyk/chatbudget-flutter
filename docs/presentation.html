@@ -30,6 +30,10 @@
     width: 100vw;
     height: 100vh;
     position: relative;
+    transition: height .3s ease;
+  }
+  .deck.notes-open {
+    height: calc(100vh - 200px);
   }
 
   .slide {
@@ -210,6 +214,10 @@
     gap: 10px;
     z-index: 100;
     align-items: center;
+    transition: bottom .3s ease;
+  }
+  .notes-open ~ #nav {
+    bottom: 220px;
   }
   #nav button {
     background: rgba(255,255,255,0.12);
@@ -226,6 +234,76 @@
   #nav .dots { display: flex; gap: 6px; align-items: center; }
   #nav .dot  { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.25); transition: background .3s; }
   #nav .dot.on { background: white; }
+
+  /* ── Notes toggle button ── */
+  #notes-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 200;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 7px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-family: inherit;
+    font-weight: 600;
+    transition: background .2s;
+    letter-spacing: 0.5px;
+  }
+  #notes-btn:hover { background: rgba(255,255,255,0.25); }
+  #notes-btn.on { background: rgba(255,220,100,0.25); border-color: rgba(255,220,100,0.5); color: #FFD966; }
+
+  /* ── Speaker Notes Panel ── */
+  #notes-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: #1a1a2e;
+    border-top: 2px solid #2E75B6;
+    z-index: 150;
+    transform: translateY(100%);
+    transition: transform .3s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  #notes-panel.open {
+    transform: translateY(0);
+  }
+  #notes-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    background: #0f1219;
+  }
+  #notes-header span {
+    color: #7EC8E3;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+  }
+  #notes-header .slide-indicator {
+    color: rgba(255,255,255,0.4);
+    font-size: 0.72rem;
+  }
+  #notes-content {
+    padding: 16px 24px;
+    overflow-y: auto;
+    flex: 1;
+    color: #e2e8f0;
+    font-size: 0.9rem;
+    line-height: 1.8;
+  }
+  #notes-content .note { display: none; }
+  #notes-content .note.active { display: block; }
+  #notes-content strong { color: #FFD966; font-weight: 700; }
+  #notes-content em { color: #7EC8E3; font-style: normal; }
 
   /* ── Scenario chat bubble ── */
   .chat-demo { display: flex; flex-direction: column; gap: 10px; }
@@ -253,6 +331,8 @@
 </style>
 </head>
 <body>
+
+<button id="notes-btn" onclick="toggleNotes()">📝 발표자 노트 (N)</button>
 
 <div class="deck" id="deck">
 
@@ -524,10 +604,95 @@
   <button onclick="go(1)">▶</button>
 </div>
 
+<!-- Speaker Notes Panel -->
+<div id="notes-panel">
+  <div id="notes-header">
+    <span>📝 발표자 노트</span>
+    <span class="slide-indicator" id="notes-slide-num">슬라이드 1 / 10</span>
+  </div>
+  <div id="notes-content">
+
+    <div class="note active" data-slide="0">
+      안녕하세요. 저는 <strong>ChatBudget</strong>이라는 채팅형 가계부 앱을 개발했습니다.<br>
+      채팅창에 <em>"스타벅스 6000원"</em> 한 줄만 입력하면 AI가 자동으로 가계부를 기록해주는 Flutter 앱입니다.<br>
+      설치 없이 웹 브라우저에서 바로 실행할 수 있습니다.
+    </div>
+
+    <div class="note" data-slide="1">
+      이 앱을 만든 이유는 <strong>가계부 앱의 가장 큰 문제</strong>를 해결하고 싶었기 때문입니다.<br>
+      기존 앱들은 카테고리를 고르고, 날짜를 설정하고, 금액을 입력하는 과정이 번거로워서 대부분 1~2주 후면 쓰지 않게 됩니다.<br>
+      ChatBudget은 <em>"스타벅스 6000원"</em>이라고 채팅창에 한 줄만 치면 AI가 금액·날짜·카테고리를 모두 자동으로 처리합니다.
+    </div>
+
+    <div class="note" data-slide="2">
+      실제로 이렇게 작동합니다.<br>
+      <em>"스타벅스 아메리카노 6000"</em>을 입력하면 Gemini AI가 카테고리는 카페, 금액은 6천원으로 자동 파싱합니다.<br>
+      <em>"어제 택시 12000원"</em>이라고 하면 날짜도 자동으로 어제로 설정됩니다.<br>
+      특히 <em>"헬스장 8만원"</em>처럼 기존에 없는 카테고리는 AI가 <strong>"헬스장"이라는 새 카테고리를 직접 만들어</strong> 저장합니다.<br>
+      AI 파싱이 실패하면 rule-based 파서로 자동 폴백되어 항상 결과를 받을 수 있습니다.
+    </div>
+
+    <div class="note" data-slide="3">
+      MoSCoW 우선순위 기법으로 요구사항을 정리했습니다.<br>
+      <strong>Must</strong>인 채팅 입력, 내역 조회·수정·삭제, 로그인, 통계, SQLite 저장은 모두 완료했습니다.<br>
+      <strong>Should</strong>인 저축 목표 관리와 달성 예상일도 구현했고,<br>
+      <strong>Could</strong>인 일별 막대 차트, 예산 관리, AI 카테고리 자동 생성까지 전부 완료했습니다.
+    </div>
+
+    <div class="note" data-slide="4">
+      앱을 <strong>4개 층으로 나눴습니다.</strong><br>
+      화면을 담당하는 <em>Presentation</em>, 자연어 파싱 로직인 <em>Domain</em>, DB와 AI 호출을 담당하는 <em>Data</em>, 실제 SQLite 파일인 <em>Infrastructure</em>입니다.<br>
+      이렇게 나눈 이유는 각 역할을 분리해서 <strong>테스트와 유지보수를 쉽게 하기 위해서</strong>입니다.<br>
+      예를 들어 TransactionParser는 UI와 완전히 분리되어 있어서 독립적으로 단위 테스트가 가능합니다.
+    </div>
+
+    <div class="note" data-slide="5">
+      주요 기술 선택을 ADR(Architecture Decision Record) 3건으로 기록했습니다.<br>
+      <strong>Flutter</strong>를 선택한 이유는 단일 Dart 코드로 Web·Android·iOS를 동시에 지원하기 때문입니다. 특히 오늘 발표에서 설치 없이 웹 링크 하나로 즉시 데모할 수 있다는 게 큰 장점이었습니다.<br>
+      <strong>상태 관리는 setState</strong>를 선택했는데, 소규모 앱에 Riverpod이나 Bloc 같은 외부 패키지를 쓰는 건 과도하다고 판단했습니다.<br>
+      <strong>SQLite</strong>는 오프라인 우선 + 개인 금융 데이터를 서버로 보내지 않기 위해 선택했습니다.
+    </div>
+
+    <div class="note" data-slide="6">
+      이 프로젝트는 <strong>Claude Code AI 에이전트와 전 과정을 협업</strong>했습니다.<br>
+      기획서 작성부터 아키텍처 설계, 전체 Flutter 코드 구현, 단위 테스트, 배포, 문서화까지 모두 AI와 함께 진행했습니다.<br>
+      중요한 원칙은 <em>"AI가 만든 것이라도 제가 모두 이해하고 설명할 수 있어야 한다"</em>는 것이었습니다.<br>
+      매 기능을 완료할 때마다 코드를 직접 리뷰하고 이해한 뒤에 커밋했습니다.
+    </div>
+
+    <div class="note" data-slide="7">
+      WBS 기준으로 <strong>전체 30개 항목 중 29개를 완료해서 97%를 달성</strong>했습니다.<br>
+      기획·설계, 전 기능 구현, 웹 배포가 모두 완료됐습니다.<br>
+      남은 1개는 Android APK 공식 릴리즈인데, 웹으로는 이미 배포가 완료된 상태입니다.<br>
+      WBS 간트차트도 GitHub Pages에 배포되어 있습니다.
+    </div>
+
+    <div class="note" data-slide="8">
+      예상 질문들에 대한 답변을 정리했습니다.<br>
+      <strong>플랫폼:</strong> Flutter, 단일 코드로 웹과 안드로이드 동시 지원, ADR-0001에 기록.<br>
+      <strong>구조:</strong> 4레이어, Presentation→Domain→Data→Infrastructure, 파서가 UI와 분리되어 독립 테스트 가능.<br>
+      <strong>환경 설정:</strong> git clone → flutter pub get → flutter run 세 줄.<br>
+      <strong>배포:</strong> flutter build web → docs/app 복사 → git push → GitHub Pages 자동 서빙.<br>
+      <strong>테스트:</strong> flutter test, TransactionParser 단위 테스트 3개.
+    </div>
+
+    <div class="note" data-slide="9">
+      이상으로 ChatBudget 발표를 마치겠습니다.<br>
+      <em>"채팅창에 한 줄만 입력하면 AI가 가계부를 기록한다"</em>는 핵심 가치를 Flutter와 Gemini AI로 구현했습니다.<br>
+      앱은 지금 바로 웹 링크로 사용해보실 수 있습니다.<br>
+      <strong>질문 있으시면 말씀해 주세요. 감사합니다.</strong>
+    </div>
+
+  </div>
+</div>
+
 <script>
   const slides = document.querySelectorAll('.slide');
   const dotsEl = document.getElementById('dots');
+  const notes  = document.querySelectorAll('.note');
+  const notesSlidNum = document.getElementById('notes-slide-num');
   let cur = 0;
+  let notesOpen = false;
 
   // Build dots
   slides.forEach((_, i) => {
@@ -538,27 +703,46 @@
   });
 
   function goTo(n) {
-    slides[cur].classList.remove('active');
-    slides[cur].classList.add('prev');
-    setTimeout(() => slides[cur < n ? cur : cur].classList.remove('prev'), 400);
-
     const prev = cur;
     cur = Math.max(0, Math.min(slides.length - 1, n));
+    if (prev === cur) return;
 
-    slides[prev].classList.remove('active', 'prev');
+    slides[prev].classList.remove('active');
+    slides[prev].classList.add('prev');
+    setTimeout(() => slides[prev].classList.remove('prev'), 400);
     slides[cur].classList.add('active');
 
     document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('on', i === cur));
+
+    // Update notes
+    notes.forEach(n => n.classList.remove('active'));
+    const activeNote = document.querySelector(`.note[data-slide="${cur}"]`);
+    if (activeNote) activeNote.classList.add('active');
+    notesSlidNum.textContent = `슬라이드 ${cur + 1} / ${slides.length}`;
   }
 
   function go(dir) { goTo(cur + dir); }
 
+  function toggleNotes() {
+    notesOpen = !notesOpen;
+    const panel = document.getElementById('notes-panel');
+    const deck  = document.getElementById('deck');
+    const btn   = document.getElementById('notes-btn');
+    panel.classList.toggle('open', notesOpen);
+    deck.classList.toggle('notes-open', notesOpen);
+    btn.classList.toggle('on', notesOpen);
+    btn.textContent = notesOpen ? '✕ 노트 닫기' : '📝 발표자 노트 (N)';
+    // Reposition nav
+    document.getElementById('nav').style.bottom = notesOpen ? '220px' : '28px';
+  }
+
   // Keyboard
   document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') go(1);
-    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')  go(-1);
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); go(1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')  { e.preventDefault(); go(-1); }
     if (e.key === 'Home') goTo(0);
     if (e.key === 'End')  goTo(slides.length - 1);
+    if (e.key === 'n' || e.key === 'N') toggleNotes();
   });
 
   // Touch swipe
