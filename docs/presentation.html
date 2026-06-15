@@ -613,72 +613,72 @@
   <div id="notes-content">
 
     <div class="note active" data-slide="0">
-      안녕하세요. 저는 <strong>ChatBudget</strong>이라는 채팅형 가계부 앱을 개발했습니다.<br>
-      채팅창에 <em>"스타벅스 6000원"</em> 한 줄만 입력하면 AI가 자동으로 가계부를 기록해주는 Flutter 앱입니다.<br>
+      안녕하세요. 저는 <strong>챗버짓(ChatBudget)</strong>이라는 채팅형 가계부 앱을 개발했습니다.<br>
+      채팅창에 <em>"스타벅스 6000원"</em> 한 줄만 입력하면 에이아이(AI)가 자동으로 가계부를 기록해주는 <strong>플러터(Flutter)</strong> 앱입니다.<br>
       설치 없이 웹 브라우저에서 바로 실행할 수 있습니다.
     </div>
 
     <div class="note" data-slide="1">
       이 앱을 만든 이유는 <strong>가계부 앱의 가장 큰 문제</strong>를 해결하고 싶었기 때문입니다.<br>
       기존 앱들은 카테고리를 고르고, 날짜를 설정하고, 금액을 입력하는 과정이 번거로워서 대부분 1~2주 후면 쓰지 않게 됩니다.<br>
-      ChatBudget은 <em>"스타벅스 6000원"</em>이라고 채팅창에 한 줄만 치면 AI가 금액·날짜·카테고리를 모두 자동으로 처리합니다.
+      챗버짓(ChatBudget)은 <em>"스타벅스 6000원"</em>이라고 채팅창에 한 줄만 치면 에이아이(AI)가 금액·날짜·카테고리를 모두 자동으로 처리합니다.
     </div>
 
     <div class="note" data-slide="2">
       실제로 이렇게 작동합니다.<br>
-      <em>"스타벅스 아메리카노 6000"</em>을 입력하면 Gemini AI가 카테고리는 카페, 금액은 6천원으로 자동 파싱합니다.<br>
+      <em>"스타벅스 아메리카노 6000"</em>을 입력하면 제미나이(Gemini) 에이아이(AI)가 카테고리는 카페, 금액은 6천원으로 자동 파싱합니다.<br>
       <em>"어제 택시 12000원"</em>이라고 하면 날짜도 자동으로 어제로 설정됩니다.<br>
-      특히 <em>"헬스장 8만원"</em>처럼 기존에 없는 카테고리는 AI가 <strong>"헬스장"이라는 새 카테고리를 직접 만들어</strong> 저장합니다.<br>
-      AI 파싱이 실패하면 rule-based 파서로 자동 폴백되어 항상 결과를 받을 수 있습니다.
+      특히 <em>"헬스장 8만원"</em>처럼 기존에 없는 카테고리는 에이아이(AI)가 <strong>"헬스장"이라는 새 카테고리를 직접 만들어</strong> 저장합니다.<br>
+      에이아이(AI) 파싱이 실패하면 룰 베이스드(rule-based) 파서로 자동 폴백되어 항상 결과를 받을 수 있습니다.
     </div>
 
     <div class="note" data-slide="3">
-      MoSCoW 우선순위 기법으로 요구사항을 정리했습니다.<br>
-      <strong>Must</strong>인 채팅 입력, 내역 조회·수정·삭제, 로그인, 통계, SQLite 저장은 모두 완료했습니다.<br>
-      <strong>Should</strong>인 저축 목표 관리와 달성 예상일도 구현했고,<br>
-      <strong>Could</strong>인 일별 막대 차트, 예산 관리, AI 카테고리 자동 생성까지 전부 완료했습니다.
+      모스코우(MoSCoW) 우선순위 기법으로 요구사항을 정리했습니다.<br>
+      <strong>머스트(Must)</strong>인 채팅 입력, 내역 조회·수정·삭제, 로그인, 통계, 에스큐라이트(SQLite) 저장은 모두 완료했습니다.<br>
+      <strong>슈드(Should)</strong>인 저축 목표 관리와 달성 예상일도 구현했고,<br>
+      <strong>쿠드(Could)</strong>인 일별 막대 차트, 예산 관리, 에이아이(AI) 카테고리 자동 생성까지 전부 완료했습니다.
     </div>
 
     <div class="note" data-slide="4">
       앱을 <strong>4개 층으로 나눴습니다.</strong><br>
-      화면을 담당하는 <em>Presentation</em>, 자연어 파싱 로직인 <em>Domain</em>, DB와 AI 호출을 담당하는 <em>Data</em>, 실제 SQLite 파일인 <em>Infrastructure</em>입니다.<br>
+      화면을 담당하는 <em>프레젠테이션(Presentation)</em>, 자연어 파싱 로직인 <em>도메인(Domain)</em>, 디비(DB)와 에이아이(AI) 호출을 담당하는 <em>데이터(Data)</em>, 실제 에스큐라이트(SQLite) 파일인 <em>인프라스트럭처(Infrastructure)</em>입니다.<br>
       이렇게 나눈 이유는 각 역할을 분리해서 <strong>테스트와 유지보수를 쉽게 하기 위해서</strong>입니다.<br>
-      예를 들어 TransactionParser는 UI와 완전히 분리되어 있어서 독립적으로 단위 테스트가 가능합니다.
+      예를 들어 트랜잭션파서(TransactionParser)는 유아이(UI)와 완전히 분리되어 있어서 독립적으로 단위 테스트가 가능합니다.
     </div>
 
     <div class="note" data-slide="5">
-      주요 기술 선택을 ADR(Architecture Decision Record) 3건으로 기록했습니다.<br>
-      <strong>Flutter</strong>를 선택한 이유는 단일 Dart 코드로 Web·Android·iOS를 동시에 지원하기 때문입니다. 특히 오늘 발표에서 설치 없이 웹 링크 하나로 즉시 데모할 수 있다는 게 큰 장점이었습니다.<br>
-      <strong>상태 관리는 setState</strong>를 선택했는데, 소규모 앱에 Riverpod이나 Bloc 같은 외부 패키지를 쓰는 건 과도하다고 판단했습니다.<br>
-      <strong>SQLite</strong>는 오프라인 우선 + 개인 금융 데이터를 서버로 보내지 않기 위해 선택했습니다.
+      주요 기술 선택을 에이디알(ADR), 아키텍처 디시전 레코드(Architecture Decision Record) 3건으로 기록했습니다.<br>
+      <strong>플러터(Flutter)</strong>를 선택한 이유는 단일 다트(Dart) 코드로 웹(Web)·안드로이드(Android)·아이오에스(iOS)를 동시에 지원하기 때문입니다. 특히 오늘 발표에서 설치 없이 웹 링크 하나로 즉시 데모할 수 있다는 게 큰 장점이었습니다.<br>
+      <strong>상태 관리는 셋스테이트(setState)</strong>를 선택했는데, 소규모 앱에 리버팟(Riverpod)이나 블록(Bloc) 같은 외부 패키지를 쓰는 건 과도하다고 판단했습니다.<br>
+      <strong>에스큐라이트(SQLite)</strong>는 오프라인 우선 + 개인 금융 데이터를 서버로 보내지 않기 위해 선택했습니다.
     </div>
 
     <div class="note" data-slide="6">
-      이 프로젝트는 <strong>Claude Code AI 에이전트와 전 과정을 협업</strong>했습니다.<br>
-      기획서 작성부터 아키텍처 설계, 전체 Flutter 코드 구현, 단위 테스트, 배포, 문서화까지 모두 AI와 함께 진행했습니다.<br>
-      중요한 원칙은 <em>"AI가 만든 것이라도 제가 모두 이해하고 설명할 수 있어야 한다"</em>는 것이었습니다.<br>
+      이 프로젝트는 <strong>클로드 코드(Claude Code) 에이아이 에이전트(AI Agent)와 전 과정을 협업</strong>했습니다.<br>
+      기획서 작성부터 아키텍처 설계, 전체 플러터(Flutter) 코드 구현, 단위 테스트, 배포, 문서화까지 모두 에이아이(AI)와 함께 진행했습니다.<br>
+      중요한 원칙은 <em>"에이아이(AI)가 만든 것이라도 제가 모두 이해하고 설명할 수 있어야 한다"</em>는 것이었습니다.<br>
       매 기능을 완료할 때마다 코드를 직접 리뷰하고 이해한 뒤에 커밋했습니다.
     </div>
 
     <div class="note" data-slide="7">
-      WBS 기준으로 <strong>전체 30개 항목 중 29개를 완료해서 97%를 달성</strong>했습니다.<br>
+      더블유비에스(WBS) 기준으로 <strong>전체 30개 항목 중 29개를 완료해서 97%를 달성</strong>했습니다.<br>
       기획·설계, 전 기능 구현, 웹 배포가 모두 완료됐습니다.<br>
-      남은 1개는 Android APK 공식 릴리즈인데, 웹으로는 이미 배포가 완료된 상태입니다.<br>
-      WBS 간트차트도 GitHub Pages에 배포되어 있습니다.
+      남은 1개는 안드로이드(Android) 에이피케이(APK) 공식 릴리즈인데, 웹으로는 이미 배포가 완료된 상태입니다.<br>
+      더블유비에스(WBS) 간트차트도 깃허브 페이지스(GitHub Pages)에 배포되어 있습니다.
     </div>
 
     <div class="note" data-slide="8">
       예상 질문들에 대한 답변을 정리했습니다.<br>
-      <strong>플랫폼:</strong> Flutter, 단일 코드로 웹과 안드로이드 동시 지원, ADR-0001에 기록.<br>
-      <strong>구조:</strong> 4레이어, Presentation→Domain→Data→Infrastructure, 파서가 UI와 분리되어 독립 테스트 가능.<br>
-      <strong>환경 설정:</strong> git clone → flutter pub get → flutter run 세 줄.<br>
-      <strong>배포:</strong> flutter build web → docs/app 복사 → git push → GitHub Pages 자동 서빙.<br>
-      <strong>테스트:</strong> flutter test, TransactionParser 단위 테스트 3개.
+      <strong>플랫폼:</strong> 플러터(Flutter), 단일 코드로 웹과 안드로이드(Android) 동시 지원, 에이디알(ADR)-0001에 기록.<br>
+      <strong>구조:</strong> 4레이어, 프레젠테이션(Presentation) → 도메인(Domain) → 데이터(Data) → 인프라스트럭처(Infrastructure), 파서가 유아이(UI)와 분리되어 독립 테스트 가능.<br>
+      <strong>환경 설정:</strong> 깃 클론(git clone) → 플러터 펍 겟(flutter pub get) → 플러터 런(flutter run) 세 줄.<br>
+      <strong>배포:</strong> 플러터 빌드 웹(flutter build web) → 깃 푸시(git push) → 깃허브 페이지스(GitHub Pages) 자동 서빙.<br>
+      <strong>테스트:</strong> 플러터 테스트(flutter test), 트랜잭션파서(TransactionParser) 단위 테스트 3개.
     </div>
 
     <div class="note" data-slide="9">
-      이상으로 ChatBudget 발표를 마치겠습니다.<br>
-      <em>"채팅창에 한 줄만 입력하면 AI가 가계부를 기록한다"</em>는 핵심 가치를 Flutter와 Gemini AI로 구현했습니다.<br>
+      이상으로 챗버짓(ChatBudget) 발표를 마치겠습니다.<br>
+      <em>"채팅창에 한 줄만 입력하면 에이아이(AI)가 가계부를 기록한다"</em>는 핵심 가치를 플러터(Flutter)와 제미나이(Gemini) 에이아이(AI)로 구현했습니다.<br>
       앱은 지금 바로 웹 링크로 사용해보실 수 있습니다.<br>
       <strong>질문 있으시면 말씀해 주세요. 감사합니다.</strong>
     </div>
