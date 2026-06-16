@@ -529,34 +529,42 @@
 
 <!-- ⑪ ADR + AI 활용 + 향후 -->
 <div class="slide theme-white left" id="s10">
-  <div class="score-tag" style="color:#1F4E79;">질의응답 ①⑤ · 개발자기본소양 ⑤</div>
-  <div class="tag" style="color:var(--primary);">ADR · AI Agent · Future</div>
-  <h2 style="color:var(--primary);">기술 의사결정 & AI 협업 & 향후 계획</h2>
+  <div class="score-tag" style="color:#1F4E79;">질의응답 ①⑤ · 개발자기본소양 ⑤ · ⭐가산점</div>
+  <div class="tag" style="color:var(--primary);">ADR · AI Agent · 가산점</div>
+  <h2 style="color:var(--primary);">기술 의사결정 & AI 협업 & 가산점</h2>
   <div class="three-col w-full">
     <div class="card-light">
       <div style="font-size:0.68rem;font-weight:700;color:var(--blue);letter-spacing:1px;margin-bottom:6px;">ADR-0001</div>
-      <h3 style="color:var(--primary);font-size:1.1rem;margin-bottom:8px;">Flutter 선택</h3>
-      <p style="font-size:0.82rem;">단일 코드로 Web·Android·iOS 동시 지원. 발표에서 설치 없이 데모 가능.<br><em>대안: React Native(웹 미지원)</em></p>
+      <h3 style="color:var(--primary);font-size:1.05rem;margin-bottom:6px;">Flutter 선택</h3>
+      <p style="font-size:0.8rem;">단일 코드로 Web·Android·iOS 동시 지원.<br><em>대안: React Native(웹 미지원)</em></p>
     </div>
     <div class="card-light">
       <div style="font-size:0.68rem;font-weight:700;color:var(--blue);letter-spacing:1px;margin-bottom:6px;">ADR-0002</div>
-      <h3 style="color:var(--primary);font-size:1.1rem;margin-bottom:8px;">setState 선택</h3>
-      <p style="font-size:0.82rem;">소규모 앱에 Riverpod·Bloc 불필요. ValueNotifier로 화면 간 갱신 보완.<br><em>대안: Riverpod(학습 비용 큼)</em></p>
+      <h3 style="color:var(--primary);font-size:1.05rem;margin-bottom:6px;">setState 선택</h3>
+      <p style="font-size:0.8rem;">소규모 앱에 외부 패키지 불필요.<br><em>대안: Riverpod(학습 비용 큼)</em></p>
     </div>
     <div class="card-light">
       <div style="font-size:0.68rem;font-weight:700;color:var(--blue);letter-spacing:1px;margin-bottom:6px;">ADR-0003</div>
-      <h3 style="color:var(--primary);font-size:1.1rem;margin-bottom:8px;">SQLite 선택</h3>
-      <p style="font-size:0.82rem;">오프라인 우선. 개인 금융 데이터 서버 전송 안 함. 날짜 범위 집계 쿼리 지원.<br><em>대안: Firebase(온라인 필요)</em></p>
+      <h3 style="color:var(--primary);font-size:1.05rem;margin-bottom:6px;">SQLite 선택</h3>
+      <p style="font-size:0.8rem;">오프라인 우선. 개인 데이터 서버 전송 안 함.<br><em>대안: Firebase(온라인 필요)</em></p>
     </div>
   </div>
-  <div class="two-col w-full" style="margin-top:16px;">
-    <div class="card" style="background:#f0f4f8;border:1px solid #dde3ea;">
-      <h3 style="color:var(--primary);font-size:1rem;margin-bottom:8px;">🤖 Claude Code AI Agent 활용</h3>
-      <p style="font-size:0.82rem;color:#444;">기획·설계·코딩·테스트·배포·문서화 전 과정 협업.<br>"AI가 만든 것도 내가 이해하고 설명할 수 있어야 한다"는 원칙 유지.</p>
-    </div>
-    <div class="card" style="background:#f0f4f8;border:1px solid #dde3ea;">
-      <h3 style="color:var(--primary);font-size:1rem;margin-bottom:8px;">🚀 향후 발전 방향</h3>
-      <p style="font-size:0.82rem;color:#444;">더 정확한 자연어 파싱 개선, 예산 초과 알림, 정기 지출 자동 인식, 영수증 사진 인식 기능 추가 계획.</p>
+  <!-- 가산점 카드 -->
+  <div style="width:100%;margin-top:14px;background:linear-gradient(135deg,#1F4E79,#2E75B6);border-radius:14px;padding:16px 22px;color:white;">
+    <div style="font-size:0.72rem;font-weight:700;letter-spacing:2px;opacity:0.7;margin-bottom:10px;">⭐ 가산점 항목</div>
+    <div class="three-col" style="gap:16px;">
+      <div>
+        <div style="font-size:0.78rem;font-weight:700;color:#FFD966;margin-bottom:4px;">+1 AI Agent 적극 활용</div>
+        <div style="font-size:0.76rem;opacity:0.85;">Claude Code로 기획~배포~문서화 전 과정 협업</div>
+      </div>
+      <div>
+        <div style="font-size:0.78rem;font-weight:700;color:#FFD966;margin-bottom:4px;">+2 본인만의 AI 방법론</div>
+        <div style="font-size:0.76rem;opacity:0.85;"><strong>AGENTS.md</strong> — AI가 한 일 기록<br><strong>AUTHORING.md</strong> — 나만의 협업 원칙</div>
+      </div>
+      <div>
+        <div style="font-size:0.78rem;font-weight:700;color:#FFD966;margin-bottom:4px;">+1 암묵지 관리</div>
+        <div style="font-size:0.76rem;opacity:0.85;">Claude Code 메모리 시스템으로 프로젝트 지식 지속 축적</div>
+      </div>
     </div>
   </div>
   <span class="slide-num">11 / 12</span>
@@ -679,12 +687,15 @@
       코드 품질은 플러터 애널라이즈(flutter analyze) 정적 분석으로 관리했습니다.
     </div>
 
-    <div class="note" data-slide="10" data-timing="20초">
-      <strong>【ADR + AI 협업 + 향후 — 20초】</strong><br>
+    <div class="note" data-slide="10" data-timing="35초 (가산점 포함)">
+      <strong>【ADR — 10초】</strong><br>
       기술 의사결정 3건을 에이디알(ADR)로 기록했습니다.
-      플러터(Flutter)는 멀티플랫폼, 셋스테이트(setState)는 소규모 앱 단순성, 에스큐라이트(SQLite)는 오프라인 우선입니다.
-      전 과정을 <strong>클로드 코드(Claude Code) 에이아이 에이전트(AI Agent)</strong>와 협업했고,
-      향후에는 영수증 사진 인식과 예산 초과 알림 기능을 추가할 계획입니다.
+      플러터(Flutter)는 멀티플랫폼, 셋스테이트(setState)는 소규모 앱 단순성, 에스큐라이트(SQLite)는 오프라인 우선입니다.<br><br>
+      <strong style="color:#FFD966;">⭐ 【가산점 — 25초, 여기서 아래 카드 가리키며 말하기】</strong><br>
+      추가로 가산점 항목도 준비했습니다.<br>
+      첫째, <em>클로드 코드(Claude Code) 에이아이 에이전트(AI Agent)</em>를 기획부터 배포까지 전 과정에 적극 활용했습니다. <strong>(+1점)</strong><br>
+      둘째, <em>에이전츠 엠디(AGENTS.md)</em>에는 에이아이(AI)가 한 작업을 기록하고, <em>어서링 엠디(AUTHORING.md)</em>에는 제 협업 방법론을 직접 문서화해서 본인만의 에이아이(AI) 활용 기법을 만들었습니다. <strong>(+2점)</strong><br>
+      셋째, 클로드 코드(Claude Code) 메모리 시스템을 활용해서 프로젝트 지식을 지속적으로 축적했습니다. <strong>(+1점)</strong>
     </div>
 
     <div class="note" data-slide="11" data-timing="15초">
