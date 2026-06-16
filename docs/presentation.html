@@ -688,14 +688,25 @@
     </div>
 
     <div class="note" data-slide="10" data-timing="35초 (가산점 포함)">
-      <strong>【ADR — 10초】</strong><br>
+      <strong>【발표 대본 — 10초】</strong><br>
       기술 의사결정 3건을 에이디알(ADR)로 기록했습니다.
       플러터(Flutter)는 멀티플랫폼, 셋스테이트(setState)는 소규모 앱 단순성, 에스큐라이트(SQLite)는 오프라인 우선입니다.<br><br>
-      <strong style="color:#FFD966;">⭐ 【가산점 — 25초, 여기서 아래 카드 가리키며 말하기】</strong><br>
-      추가로 가산점 항목도 준비했습니다.<br>
-      첫째, <em>클로드 코드(Claude Code) 에이아이 에이전트(AI Agent)</em>를 기획부터 배포까지 전 과정에 적극 활용했습니다. <strong>(+1점)</strong><br>
-      둘째, <em>에이전츠 엠디(AGENTS.md)</em>에는 에이아이(AI)가 한 작업을 기록하고, <em>어서링 엠디(AUTHORING.md)</em>에는 제 협업 방법론을 직접 문서화해서 본인만의 에이아이(AI) 활용 기법을 만들었습니다. <strong>(+2점)</strong><br>
-      셋째, 클로드 코드(Claude Code) 메모리 시스템을 활용해서 프로젝트 지식을 지속적으로 축적했습니다. <strong>(+1점)</strong>
+      <strong style="color:#FFD966;">⭐ 【가산점 — 25초, 아래 파란 카드 가리키며】</strong><br>
+      추가로 가산점 항목도 준비했습니다.
+      첫째, 클로드 코드(Claude Code) 에이아이 에이전트(AI Agent)를 전 과정에 적극 활용했습니다. <strong>(+1점)</strong>
+      둘째, 에이전츠 엠디(AGENTS.md)와 어서링 엠디(AUTHORING.md)로 본인만의 협업 기법을 문서화했습니다. <strong>(+2점)</strong>
+      셋째, 클로드 코드 메모리 시스템으로 프로젝트 지식을 지속 축적했습니다. <strong>(+1점)</strong><br><br>
+      <strong style="color:#FF7B7B;">━━━ Q&A 질문 왔을 때 답변 (외워두기) ━━━</strong><br><br>
+      <strong style="color:#7EC8E3;">Q. 왜 플러터(Flutter)를 선택했나요?</strong><br>
+      "에이디알 0001(ADR-0001)에 기록했듯이, 단일 다트(Dart) 코드로 웹·안드로이드·아이오에스(iOS)를 동시에 지원하기 때문입니다.
+      리액트 네이티브(React Native)도 고려했지만 웹 지원이 미흡해서 제외했습니다.
+      플러터(Flutter) 덕분에 오늘 발표에서 설치 없이 웹 링크 하나로 바로 데모할 수 있었습니다."<br><br>
+      <strong style="color:#7EC8E3;">Q. 왜 셋스테이트(setState)를 썼나요?</strong><br>
+      "에이디알 0002(ADR-0002)에 기록했듯이, 이 앱 규모에서 리버팟(Riverpod)이나 블록(Bloc) 같은 외부 상태관리 패키지는 과도하다고 판단했습니다.
+      화면 간 실시간 갱신이 필요한 부분은 밸류노티파이어(ValueNotifier)로 보완했습니다."<br><br>
+      <strong style="color:#7EC8E3;">Q. 왜 에스큐라이트(SQLite)를 썼나요?</strong><br>
+      "에이디알 0003(ADR-0003)에 기록했듯이, 오프라인 우선 설계와 개인 금융 데이터를 서버로 보내지 않기 위해서입니다.
+      파이어베이스(Firebase)는 인터넷이 필요하고, 하이브(Hive)는 날짜 범위 집계 쿼리가 어려워서 제외했습니다."
     </div>
 
     <div class="note" data-slide="11" data-timing="15초">
